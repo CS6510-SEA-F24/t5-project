@@ -13,8 +13,8 @@ The input to the program must be a YAML file. This can be the configuration file
 
 The YAML input is required to be 
 
-. valid YAML 
-. use the keys defined by the CI/CD requirements 
+1. valid YAML 
+1. use the keys defined by the CI/CD requirements 
 
 Any extra YAML keys that are found in the YAML file are **not** processed by the graphical representation program.
 
@@ -108,3 +108,7 @@ All stages must be **top** aligned and must have equally distributed on the x-ax
 
 All jobs within a stage must be **center** aligned and must be equally distributed on the y-axis. 
 
+
+### Arrows 
+
+The program must do its best to position arrows (straight or curved) so that **no arrow overlaps with any other component**. When that is not possible the arrow should be placed so that we have the minimum amount of overlap between the arrow and other graphical components. 
