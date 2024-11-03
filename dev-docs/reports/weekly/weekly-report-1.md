@@ -14,6 +14,8 @@
 | Configure Python repo and GitHub Actions CI/CD | 1      | Yuanyuan | 
 | Weekly Report 1                                | 1      | Yuanyuan |
 
+> You do not need to add the Weekly Report as a task. That is always there :) 
+
 # New tasks 
 
 | Task | Weight | Assignee |
@@ -31,3 +33,5 @@
 # Design updates 
 - Graphical Representation of Pipelines Design Doc(https://docs.google.com/document/d/1EBjUZghnbNYWNWvdYkpaDX_hCFstS53lY5C7ZLWqFdU/edit?usp=sharing)
 - GitLab pipeline (https://docs.gitlab.com/ee/ci/pipelines/)
+
+> Good start. Let's keep it up for this week. 
