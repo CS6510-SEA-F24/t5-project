@@ -11,8 +11,8 @@ on:
   push:
     branches:
       - main
-      -
-      # Define the jobs to be run in the workflow
+
+# Define the jobs to be run in the workflow
 jobs:
   pr_pipeline:
     # Run the job if the PR is opened, or synchronized
