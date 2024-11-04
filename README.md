@@ -58,7 +58,7 @@ poetry build
 
 ```bash
 poetry run 
-# e.g. poetry run python -m t5_grp.main ../test.yaml
+# e.g. poetry run python -m t5_grp.main ./test.yaml
 ```
 Running different files
 ```bash
