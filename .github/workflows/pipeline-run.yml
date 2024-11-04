@@ -47,6 +47,8 @@ jobs:
           poetry run pytest --version
 
       - name: Run Tests and Coverage
+        env:
+          PYTHONPATH: ./src
         run: |
           mkdir -p reports/tests
           mkdir -p htmlcov
@@ -102,6 +104,8 @@ jobs:
           poetry run pytest --version
 
       - name: Run Tests and Coverage
+        env:
+          PYTHONPATH: ./src
         run: |
           mkdir -p reports/tests
           mkdir -p htmlcov

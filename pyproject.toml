@@ -31,9 +31,12 @@ cicd = "t5_grp.main:main"
 
 [tool.pytest.ini_options]
 testpaths = [
-    "tests"
+    "src/tests"
 ]
-pythonpath = ["src"]
+pythonpath = [
+    ".",
+    "./src"
+]
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
