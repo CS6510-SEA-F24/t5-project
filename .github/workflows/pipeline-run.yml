@@ -47,7 +47,7 @@ jobs:
           poetry run pytest --version
 
       - name: Run Tests and Coverage
-        run:
+        run: |
           mkdir -p reports/tests
           mkdir -p htmlcov
           poetry run pytest --cov=src/ --cov-report=term-missing --cov-report=html:htmlcov --cov-fail-under=50
@@ -102,7 +102,7 @@ jobs:
           poetry run pytest --version
 
       - name: Run Tests and Coverage
-        run:
+        run: |
           mkdir -p reports/tests
           mkdir -p htmlcov
           poetry run pytest --cov=src/ --cov-report=term-missing --cov-report=html:htmlcov --cov-fail-under=50
