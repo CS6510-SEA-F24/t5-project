@@ -21,6 +21,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          node-version: '20.x'
+
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -71,6 +74,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          node-version: '20.x'
 
       - name: Set up Python
         uses: actions/setup-python@v4
