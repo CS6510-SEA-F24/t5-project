@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "t5-grp"
+name = "t5_grp"
 version = "0.1.0"
 description = "A tool to generate and visualize pipeline diagrams"
 authors = ["Yoyo <wu.yuanyu@northeastern.edu>"]
@@ -16,11 +16,24 @@ python = "^3.12"
 requests = "^2.32.3"
 pyyaml = "^6.0.2"
 graphviz = "^0.20.3"
+GitPython = "^3.1.24"
 
+[tool.poetry.dev-dependencies]
+pytest = "^7.2.2"               # Pytest Test
+pytest-cov = "^4.0.0"           # Pytest coverage plugin to check code coverage
+black = "^24.8.0"               # Black automatic code formatting
 
 [tool.poetry.group.dev.dependencies]
-flake8 = "^7.1.1"
+nox = "^2024.4.15"
 
+[tool.poetry.scripts]
+cicd = "t5_grp.main:main"
+
+[tool.pytest.ini_options]
+testpaths = [
+    "tests"
+]
+pythonpath = ["src"]
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"

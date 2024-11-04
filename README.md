@@ -58,25 +58,8 @@ poetry build
 
 ```bash
 poetry run 
-# e.g. poetry run python -m t5_grp.main ./test.yaml
+# e.g. poetry run cicd test.yaml
 ```
-Running different files
-```bash
-poetry run python -m t5_grp.main <your_yaml_file_path>
-```
-
-```bash
-poetry run black src/ tests
-```
-
-Lint Code (Flake8): Check code style against PEP8 guidelines:
-
-```bash
-poetry run flake8 src/ tests/
-```
-
-## User Manual
-navigating to the project directory and running the script
 
 
 ## Pull Request Process
@@ -133,10 +116,7 @@ git pull
 
 - When merging PRs, always use **SQUASH AND MERGE** to combine all changes into a single commit.
 
-#### Review Timebox:
 
-- Please post reviews within 24 hours after you received the review request, or ask for others to
-  do the review.
 ## CI/CD Workflows
 
 This project uses **GitHub Actions** for CI/CD automation. The configured CI/CD workflows are:

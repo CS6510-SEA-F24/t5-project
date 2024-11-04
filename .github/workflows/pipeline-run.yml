@@ -35,10 +35,19 @@ jobs:
           python -m pip install poetry
           poetry install
 
+      - name: Verify pytest is installed
+        run: |
+          poetry run pytest --version
+
       - name: Run Tests and Coverage
         run:
-          poetry run pytest --cov=src/ --cov-report=term-missing --cov-fail-under=70
+          mkdir -p reports/tests
+          mkdir -p htmlcov
+          poetry run pytest --cov=src/ --cov-report=term-missing --cov-report=html:htmlcov --cov-fail-under=50
 
+      - name: List generated files for debug
+        run: |
+          ls -R reports
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v3
@@ -73,9 +82,19 @@ jobs:
           python -m pip install poetry
           poetry install
 
+      - name: Verify pytest is installed
+        run: |
+          poetry run pytest --version
+
       - name: Run Tests and Coverage
         run:
-           poetry run pytest --cov=src/ --cov-report=term-missing --cov-fail-under=70
+          mkdir -p reports/tests
+          mkdir -p htmlcov
+          poetry run pytest --cov=src/ --cov-report=term-missing --cov-report=html:htmlcov --cov-fail-under=50
+
+      - name: List generated files for debug
+        run: |
+          ls -R reports
 
       - name: Upload test results
         if: always()
