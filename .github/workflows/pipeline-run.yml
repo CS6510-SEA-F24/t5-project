@@ -1,0 +1,72 @@
+name: Pipeline Run
+
+on:
+  # Trigger on various pull request events
+  pull_request:
+    types:
+      - opened # Trigger on new pull request
+      - ready_for_review # Trigger when PR is ready for review
+      - synchronize    # Trigger when new commits are pushed to the PR
+      - closed  # Trigger when a PR is merged (closed with merged status)
+  push:
+    branches:
+      - main
+
+# Define the jobs to be run in the workflow
+jobs:
+  build:
+    # Run the job if the PR is opened, or when pushed to main branch
+    if: github.event_name == 'pull_request'||(github.event_name == 'push' && github.ref == 'refs/heads/main')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+
+      - name: Install Poetry
+        run: |
+          python -m pip install poetry
+          poetry --version
+
+      - name: Update Lock File
+        run: poetry lock
+
+      - name: Install dependencies
+        run: |
+          poetry install
+
+      - name: Verify pytest is installed
+        run: |
+          poetry run pytest --version
+
+      - name: Run Tests and Coverage
+        env:
+          PYTHONPATH: ${{ github.workspace }}/src:$PYTHONPATH
+        run: |
+          mkdir -p reports/tests
+          mkdir -p htmlcov
+          poetry run pytest
+        # poetry run pytest --cov=src/ --cov-report=term-missing --cov-report=html:htmlcov --cov-fail-under= 70
+        # will update
+
+      - name: List generated files for debug
+        run: |
+          ls -R reports
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: reports/tests/
+
+      - name: Upload Coverage Report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: htmlcov/

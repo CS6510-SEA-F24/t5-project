@@ -1,14 +1,14 @@
 {
   "type": "excalidraw",
   "version": 2,
-  "source": "https://excalidraw.com",
+  "source": "https://excalidraw-jetbrains-plugin",
   "elements": [
     {
       "id": "DRl1JKmxIOM8HPy3Kh7gA",
       "type": "text",
       "x": 322,
       "y": 269,
-      "width": 278.41666666666663,
+      "width": 196.0546875,
       "height": 800,
       "angle": 0,
       "strokeColor": "#1e1e1e",
@@ -23,11 +23,11 @@
       "index": "b5Y",
       "roundness": null,
       "seed": 1911614199,
-      "version": 428,
-      "versionNonce": 493666969,
+      "version": 429,
+      "versionNonce": 1186829689,
       "isDeleted": false,
       "boundElements": null,
-      "updated": 1730406171945,
+      "updated": 1730411486161,
       "link": null,
       "locked": false,
       "text": "pipeline: \n   name: P1\n\nstages: \n    - build\n    - test \n    - doc \n    - deploy \n\njob: \n  name: compile \n   stage: build \n   needs: [static analysis]\n   ...\n\njob: \n  name: static analysis\n  stage: build \n\njob: \n  name: run tests \n  stage: test \n\n\njob: \n  name: generate docs\n  stage: doc \n\njob: \n  name: publish \n  stage: deploy\n  .. ",
@@ -38,7 +38,8 @@
       "containerId": null,
       "originalText": "pipeline: \n   name: P1\n\nstages: \n    - build\n    - test \n    - doc \n    - deploy \n\njob: \n  name: compile \n   stage: build \n   needs: [static analysis]\n   ...\n\njob: \n  name: static analysis\n  stage: build \n\njob: \n  name: run tests \n  stage: test \n\n\njob: \n  name: generate docs\n  stage: doc \n\njob: \n  name: publish \n  stage: deploy\n  .. ",
       "autoResize": true,
-      "lineHeight": 1.25
+      "lineHeight": 1.25,
+      "baseline": 794
     },
     {
       "id": "r9cQ62VGhrRDL2zJ0DDdQ",
@@ -165,7 +166,7 @@
       "type": "text",
       "x": 779,
       "y": 220,
-      "width": 44.45,
+      "width": 41.11328125,
       "height": 25,
       "angle": 0,
       "strokeColor": "#1e1e1e",
@@ -180,11 +181,11 @@
       "index": "b5d",
       "roundness": null,
       "seed": 133627351,
-      "version": 39,
-      "versionNonce": 1115748089,
+      "version": 40,
+      "versionNonce": 1034640023,
       "isDeleted": false,
       "boundElements": null,
-      "updated": 1730406082987,
+      "updated": 1730411486161,
       "link": null,
       "locked": false,
       "text": "build",
@@ -195,14 +196,15 @@
       "containerId": null,
       "originalText": "build",
       "autoResize": true,
-      "lineHeight": 1.25
+      "lineHeight": 1.25,
+      "baseline": 19
     },
     {
       "id": "cdqNbTN1ol-g_-YsRY9HP",
       "type": "text",
       "x": 1167.775,
       "y": 221.5,
-      "width": 43.733333587646484,
+      "width": 27.7734375,
       "height": 25,
       "angle": 0,
       "strokeColor": "#1e1e1e",
@@ -217,11 +219,11 @@
       "index": "b5e",
       "roundness": null,
       "seed": 1911049401,
-      "version": 85,
-      "versionNonce": 950648217,
+      "version": 86,
+      "versionNonce": 1228832345,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1730406093074,
+      "updated": 1730411486162,
       "link": null,
       "locked": false,
       "text": "test",
@@ -232,14 +234,15 @@
       "containerId": null,
       "originalText": "test",
       "autoResize": true,
-      "lineHeight": 1.25
+      "lineHeight": 1.25,
+      "baseline": 19
     },
     {
       "id": "UCh0VRMDQ4cMwB-Q4Cd2r",
       "type": "text",
       "x": 1593.775,
       "y": 224.5,
-      "width": 45.18333333333333,
+      "width": 36.66015625,
       "height": 25,
       "angle": 0,
       "strokeColor": "#1e1e1e",
@@ -254,11 +257,11 @@
       "index": "b5f",
       "roundness": null,
       "seed": 833923735,
-      "version": 124,
-      "versionNonce": 1245640409,
+      "version": 125,
+      "versionNonce": 1320284087,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1730406095194,
+      "updated": 1730411486162,
       "link": null,
       "locked": false,
       "text": "docs",
@@ -269,14 +272,15 @@
       "containerId": null,
       "originalText": "docs",
       "autoResize": true,
-      "lineHeight": 1.25
+      "lineHeight": 1.25,
+      "baseline": 19
     },
     {
       "id": "sJhvPbluO8zJbgmgCAWCy",
       "type": "text",
       "x": 2029.775,
       "y": 226.5,
-      "width": 61.06666666666666,
+      "width": 54.43359375,
       "height": 25,
       "angle": 0,
       "strokeColor": "#1e1e1e",
@@ -291,11 +295,11 @@
       "index": "b5g",
       "roundness": null,
       "seed": 732900983,
-      "version": 168,
-      "versionNonce": 505925081,
+      "version": 169,
+      "versionNonce": 560941881,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1730406098074,
+      "updated": 1730411486162,
       "link": null,
       "locked": false,
       "text": "deploy",
@@ -306,7 +310,8 @@
       "containerId": null,
       "originalText": "deploy",
       "autoResize": true,
-      "lineHeight": 1.25
+      "lineHeight": 1.25,
+      "baseline": 19
     },
     {
       "id": "4BPWT5FF1H9MRxgwWRW99",
@@ -734,10 +739,8 @@
     }
   ],
   "appState": {
-    "gridSize": 20,
-    "gridStep": 5,
-    "gridModeEnabled": false,
-    "viewBackgroundColor": "#ffffff"
+    "gridSize": null,
+    "viewBackgroundColor": "#fdf8f6"
   },
   "files": {}
 }
