@@ -61,7 +61,6 @@ poetry run
 # e.g. poetry run cicd test.yaml
 ```
 
-
 ## Pull Request Process
 
 ### Creating a PR
@@ -97,13 +96,6 @@ git pull
 
 ### Rules for PRs
 
-#### PR Size Limit:
-
-- PRs should not exceed 150 lines unless absolutely necessary.
-
-  > To override this, add an `override-size-limit` label in the PR, and provide explanation in the
-  > PR description.
-
 #### Testing:
 
 - Ensure all new code is properly tested.
@@ -115,7 +107,6 @@ git pull
 #### Merging:
 
 - When merging PRs, always use **SQUASH AND MERGE** to combine all changes into a single commit.
-
 
 ## CI/CD Workflows
 
