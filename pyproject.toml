@@ -10,13 +10,13 @@ packages = [
     { include = "t5_grp", from = "src/main" }
 ]
 
-
 [tool.poetry.dependencies]
 python = "^3.12"
 requests = "^2.32.3"
 pyyaml = "^6.0.2"
 graphviz = "^0.20.3"
 GitPython = "^3.1.24"
+jinja2 = "^3.1.4"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.2.2"               # Pytest Test
@@ -27,7 +27,7 @@ black = "^24.8.0"               # Black automatic code formatting
 nox = "^2024.4.15"
 
 [tool.poetry.scripts]
-cicd = "t5_grp.main:main"
+cicd = "src.main.t5_grp.main:cli"
 
 [tool.pytest.ini_options]
 testpaths = [

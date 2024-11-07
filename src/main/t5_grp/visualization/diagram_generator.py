@@ -1,121 +1,127 @@
-from graphviz import Digraph
+from jinja2 import Environment, FileSystemLoader
+from typing import Any
+import os
+import shutil
+"""
+This module provides functions to generate an HTML representation for a pipeline diagram, using Jinja2 template rendering.
 
+Functions:
+    generate_html(data: dict) -> None:
+        Generates an HTML file from the provided pipeline data.
+        
+    extract_pipeline_data(data: dict) -> dict:
+        Processes and extracts relevant pipeline data from input and organizes it into a structured format.
 
-def generate_dot_diagram(pipeline_data):
+Usage:
+    Use `generate_html(data)` to generate an HTML file representing the pipeline.
+    The module relies on Jinja2 templates to structure the HTML output.
+"""
+
+def generate_html(data: dict) -> None:
     """
-    Generates a complete pipeline diagram with proper positioning.
+    Generates an HTML file from the given pipeline data.
 
-    Parameters:
-        pipeline_data (dict): The parsed YAML content containing pipeline information.
+    Args:
+        data (dict): The input data containing pipeline structure, stages, jobs, and artifacts.
+
+    This function sets up the Jinja2 Environment, loads the pipeline template, and renders the HTML output.
+    The resulting HTML file is saved in the 'tests' directory.
+    """
+    # Extract pipeline data
+    pipeline_data = extract_pipeline_data(data)
+    # current_dir = os.path.dirname(__file__)
+    # #debug
+    # shutil.copy2(os.path.join(current_dir, '..', 'assets', 'main.css'), os.path.join(current_dir, '..', '..', 'main.css'))
+    # shutil.copy2(os.path.join(current_dir, '..', 'assets', 'main.js'), os.path.join(current_dir, '..', '..', 'main.js'))
+
+    # Setting up the Jinja2 environment
+    env = Environment(
+        loader=FileSystemLoader(os.path.join(os.path.dirname(__file__), '..', 'templates')),
+        autoescape=True  # Enable auto-escaping
+    )
+    # Loading the template
+    template = env.get_template('pipeline_template.html')
+    # Rendering the template with the pipeline data
+    html_output = template.render(pipeline=pipeline_data)
+
+    # Ensure the output directory exists
+    output_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'src', 'main'))
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    # Defining the output path
+    output_path = os.path.join(output_dir, 'output.html')
+    # Writing the rendered HTML to a file
+    with open(output_path, 'w') as file:
+        file.write(html_output)
+    print("Generated output.html successfully.")
+
+
+def extract_pipeline_data(data: dict) -> dict:
+    """
+    Extracts and processes pipeline data from the given input.
+
+    Args:
+        data (dict): The input data containing pipeline structure, stages, jobs, and artifacts.
 
     Returns:
-        Digraph: A graphviz Digraph object representing the pipeline diagram.
+        dict: A dictionary containing processed pipeline data sorted into stages, jobs, and artifacts.
+
+    This function processes job dependencies, stages, and artifacts and prepares a structured data format for
+    rendering in the HTML template.
     """
-    # Get the pipeline name from the data, or use 'Pipeline' as default if not available
-    pipeline_name = pipeline_data.get('pipeline', {}).get('name', 'Pipeline')
-    dot = Digraph(comment=pipeline_name)
+    pipeline_info: dict[str, Any] = {
+        'name': data.get('pipeline', {}).get('name', 'Unnamed Pipeline'),
+        'stages': data.get('stages', []),
+        'jobs': {},
+        'artifacts': {},
+        'dependencies': []
+    }
 
-    # Basic graph settings
-    dot.attr(
-        compound='true',# Allows edges to cross cluster boundaries
-        rankdir='LR',  # Left-to-right layout
-        nodesep='0.5',  # Node separation
-        ranksep='1.0',  # Rank separation
-        splines='ortho'  # Use orthogonal edge routing to reduce overlaps
-    )
+    # Collections for artifact information
+    all_artifacts: set[str] = set()
+    stage_artifacts: dict[str, set[str]] = {}
 
-    stages = pipeline_data.get('stages', [])
-    jobs = pipeline_data.get('jobs', [])
-    stage_dict = {stage: [] for stage in stages}
-    for job in jobs:
-        stage_dict[job['stage']].append(job)
-    job_dependencies = {job['name']: job.get('needs', []) for job in jobs}
+    # Process jobs and their artifacts
+    for job in data.get('jobs', []):
+        job_name = job.get('name')
+        stage_name = job.get('stage')
+
+        if job_name:
+            # Add job information to pipeline data
+            pipeline_info['jobs'][job_name] = {
+                'stage': stage_name,
+                'needs': job.get('needs', []),
+                'allow_failure': job.get('allow_failure', False),
+                'id': f'job_{job_name}',  # Unique ID for job to facilitate arrow drawing
+                'position': len(pipeline_info['jobs']),# Position for arrow layout
+                'artifacts': job.get('artifacts', {}).get('paths', [])  # Ensure artifacts field is populated
+            }
+            if not stage_name:
+                raise ValueError(f"Stage is required for job: {job_name}")
+
+            # Process and collect artifacts for each stage
+            for need in job.get('needs', []):
+                pipeline_info['dependencies'].append({
+                    'from': f'job_{need}',
+                    'to': f'job_{job_name}',
+                    'fromStage': pipeline_info['jobs'].get(need, {}).get('stage', ''),
+                    'toStage': stage_name
+                })
+
+            # Process and collect artifacts for each stage
+            if 'artifacts' in job:
+                artifacts = job['artifacts'].get('paths', [])
+                if stage_name not in stage_artifacts:
+                    stage_artifacts[stage_name] = set()
+                stage_artifacts[stage_name].update(artifacts)
+                all_artifacts.update(artifacts)
+
+    # Adding artifacts information to each stage
+    for stage, artifacts in stage_artifacts.items():
+        pipeline_info['artifacts'][stage] = sorted(list(artifacts))
+
+    # Add a summary of all artifacts in the pipeline
+    pipeline_info['all_artifacts'] = sorted(list(all_artifacts))
 
 
-    # A list to accumulate all artifacts from stages
-    cumulative_artifacts = []
-    prev_artifacts_node = None
-
-    # Iterate through each stage and create subgraphs (clusters) for them
-    for stage in stages:
-        with dot.subgraph(name=f'cluster_{stage}') as stage_cluster:
-            stage_cluster.attr(
-                label=stage, # Label for the cluster
-                color='black',
-                style='filled,rounded',
-                fillcolor='white',
-                fontcolor='black',
-                fontsize='16',
-                margin='20',
-                fixedsize='true',  # Fix size of the subgraph
-                width='4',  # Set fixed width
-                height='4',  # Set fixed height
-
-            )
-            # Filter jobs that belong to this stage
-            stage_jobs = [job for job in jobs if job.get('stage') == stage]
-            stage_artifacts = []
-
-            for job in stage_jobs:
-                job_name = job.get('name')
-                # Add a node for each job in the stage
-                stage_cluster.node(
-                    job_name,
-                    label=job_name, # Label for the job node
-                    shape='box',
-                    style='filled,rounded',
-                    fontcolor='black',
-                    width='1',  # Width of each job node
-                    height='0.5',  # Height of each job node
-                    fillcolor='white' if not job.get('allow_failure', False) else 'lightgrey'
-                    # Color based on `allow_failure`
-                )
-                # Collect artifacts if present in the job
-                if 'artifacts' in job:
-                    stage_artifacts.extend(job['artifacts'].get('paths', []))
-
-            # Add artifacts as a node if they exist
-            if stage_artifacts:
-                artifact_label = '\n'.join(stage_artifacts)
-                node_name = f'{stage}_artifacts'
-                stage_cluster.node(
-                    node_name,
-                    label=artifact_label, # Label for the artifacts node
-                    shape='box',
-                    style='filled,rounded',
-                    fillcolor='white',
-                    fontcolor='black',
-                    color='blue',   # Border color for the artifacts node
-                    margin='0.2',
-                    width='1.5',
-                    height='0.75',
-                )
-                cumulative_artifacts.extend(stage_artifacts)
-                # Create an invisible edge to maintain layout order
-                if prev_artifacts_node:
-                    stage_cluster.edge(prev_artifacts_node, node_name, style='invis')
-                prev_artifacts_node = node_name
-
-    # Add a final artifacts node at the bottom of the pipeline
-    if cumulative_artifacts:
-        final_label = '\n'.join(cumulative_artifacts)
-        dot.node(
-            'final_artifacts',
-            label=final_label,
-            shape='box',
-            style='filled,rounded',
-            fillcolor='white',
-            fontcolor='black',
-            color='blue',
-            margin='0.2'
-        )
-        if prev_artifacts_node:
-            dot.edge(prev_artifacts_node, 'final_artifacts', style='invis')
-
-    # Add edges to represent dependencies between jobs
-    for job_name, dependencies in job_dependencies.items():
-        for dependency in dependencies:
-            dot.edge(dependency, job_name)
-
-    return dot
-
+    return pipeline_info

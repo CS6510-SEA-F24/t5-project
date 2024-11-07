@@ -1,60 +1,53 @@
+from t5_grp.parser import yaml_parser
+from t5_grp.visualization import diagram_generator
 import argparse
-import os
+"""
+This module serves as the entry point for generating CI/CD pipeline visualizations from a YAML file.
 
-from .parser.yaml_parser import parse_yaml, load_yaml_from_dry_run, check_file_exists
-from .visualization.diagram_generator import generate_dot_diagram
+Functions:
+    main(yaml_file_path):
+        Parses the YAML file and generates an HTML visualization if valid.
 
+    cli():
+        Sets up the command-line interface for the script.
 
-def main():
+Usage:
+    Run the script from the command line with the path to the YAML file as an argument to generate the visualization.
+"""
+def main(yaml_file_path):
     """
-    Main function to generate a pipeline diagram from a given YAML file.
+    Parses the given YAML file and generates an HTML visualization.
 
-    This function performs the following steps:
-    1. Parses command line arguments to get the file path of the YAML file.
-    2. Checks if the provided file path exists.
-    3. Parses the YAML file to extract pipeline data.
-    4. Generates a DOT diagram from the extracted pipeline data.
-    5. Prints the DOT source code.
-    6. Renders the diagram to a PNG file and opens it for viewing.
+    Args:
+        yaml_file_path (str): Path to the YAML file containing the CI/CD configuration.
 
-    Usage:
-        python main.py path/to/your/file.yaml
-
-    Command Line Arguments:
-        file_path (str): Path to the YAML file.
+    This function uses the yaml_parser module to parse and validate the YAML file.
+    If the YAML file is valid, it passes the data to the diagram_generator module to create the HTML visualization.
     """
-    parser = argparse.ArgumentParser(description='Generate Pipeline Diagram from YAML')
-    parser.add_argument('file_path', type=str, help='Path to the YAML file')
-    parser.add_argument('--dry-run-command', type=str, nargs='?', help='CI/CD command to run with --dry-run')
+    try:
+        # Parse the YAML file and validate its content
+        data = yaml_parser.parse_yaml(yaml_file_path)
+        if data is None:
+            print("Failed to parse YAML file or validation error occurred.")
+            return
+        # Generate the HTML visualization from the parsed data
+        diagram_generator.generate_html(data)
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
+def cli():
+    """
+    Sets up the command-line interface for the script.
+
+    This function defines the command-line arguments and passes them to the main function.
+    It expects one argument: the path to the CI/CD configuration YAML file.
+    """
+    # Create the parser with a description
+    parser = argparse.ArgumentParser(description="Generate CI/CD pipeline visualization from YAML file.")
+    parser.add_argument("yaml_file", help="Path to the CI/CD configuration YAML file.")
+    # Parse the arguments and call the main function with the YAML file path
     args = parser.parse_args()
-
-    # Check if the file path is provided and the file exists
-    if args.file_path and check_file_exists(args.file_path):
-        pipeline_data = parse_yaml(args.file_path)
-    # If not, check if a dry-run command is provided
-    elif args.dry_run_command:
-        pipeline_data = load_yaml_from_dry_run(args.dry_run_command)
-    else:
-        print("No valid input provided. Either a file path or a dry-run command must be specified.")
-        return
-    # Debug statements to ensure 'jobs' and 'stages' are present in the data
-    if 'jobs' not in pipeline_data:
-        print(f"Debug: 'jobs' not found in pipeline_data: {pipeline_data}")
-    if 'stages' not in pipeline_data:
-        print(f"Debug: 'stages' not found in pipeline_data: {pipeline_data}")
-
-    # Define the output path for the diagram
-    output_path = 'output/pipeline_diagram'
-    for ext in ['.dot', '.png']:
-        if os.path.exists(output_path + ext):
-            os.remove(output_path + ext)
-
-    # Generate the DOT diagram from the pipeline data
-    dot_diagram = generate_dot_diagram(pipeline_data)
-    print(dot_diagram.source) # Print the DOT source code
-    # Render the diagram to a PNG file and open it for viewing
-    dot_diagram.render('output/pipeline_diagram', format='png', view=True)
-
+    main(args.yaml_file)
 
 if __name__ == "__main__":
-    main()
+    cli()
