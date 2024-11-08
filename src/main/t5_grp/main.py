@@ -26,8 +26,8 @@ def main(yaml_file_path):
         yaml_file_path (str):
             Path to the YAML file containing the CI/CD configuration.
 
-    This function to parse and validate the YAML file.
-    If is valid, it passes the data to the diagram_generator module
+    Use this function to parse and validate the YAML file.
+    If valid, it passes the data to the diagram_generator module
     to create the HTML visualization.
     """
 
