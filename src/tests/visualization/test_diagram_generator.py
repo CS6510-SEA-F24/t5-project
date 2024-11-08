@@ -1,4 +1,5 @@
 import unittest
+from pathlib import Path
 from unittest.mock import patch, MagicMock
 from src.main.t5_grp.visualization.diagram_generator import (
     generate_html,
@@ -49,6 +50,9 @@ class TestDiagramGenerator(unittest.TestCase):
             "stages": ["build", "test"],
             "jobs": [],
         }
+        # Get the base path for the output file
+        base_path = Path(__file__).resolve().parent.parent.parent
+        relative_output_path = base_path / "main/output.html"
 
         # Act
         generate_html(data)
@@ -56,9 +60,7 @@ class TestDiagramGenerator(unittest.TestCase):
         # Assert
         mock_exists.assert_called_once()
         mock_makedirs.assert_called_once()
-        mock_open.assert_called_once_with(
-            "/Users/yoyowu/NEU/t5_grp/src/main/output.html", "w"
-        )
+        mock_open.assert_called_once_with(str(relative_output_path), "w")
         mock_open().write.assert_called_once_with("<html></html>")
 
     def test_extract_pipeline_data(self):
