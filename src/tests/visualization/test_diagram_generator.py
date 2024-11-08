@@ -1,153 +1,148 @@
-import os
 import unittest
-from unittest.mock import patch, mock_open, MagicMock
-from t5_grp.visualization.diagram_generator import generate_html, extract_pipeline_data
-"""
-Unit tests for the `diagram_generator` module in the t5_grp.visualization package.
+from unittest.mock import patch, MagicMock
+from src.main.t5_grp.visualization.diagram_generator import (
+    generate_html,
+    extract_pipeline_data,
+    add_job_info,
+)
 
-This module contains tests to ensure that the `generate_html` and `extract_pipeline_data` functions work correctly,
-handling various inputs and edge cases as expected.
 
-Classes:
-    TestDiagramGenerator:
-        Contains tests for the `generate_html` and `extract_pipeline_data` functions.
+class TestDiagramGenerator(unittest.TestCase):
+    """
+    Test suite for the diagram_generator module.
 
-Methods:
-    test_generate_html:
-        Tests if the `generate_html` function correctly generates an HTML file from given pipeline data.
+    This class contains unit tests for the functions in the diagram_generator
+    module, including generate_html, extract_pipeline_data, and add_job_info.
+    """
 
-    test_extract_pipeline_data:
-        Tests if the `extract_pipeline_data` function correctly processes and extracts pipeline data.
+    @patch("src.main.t5_grp.visualization.diagram_generator.Environment")
+    @patch("src.main.t5_grp.visualization.diagram_generator.os.path.exists")
+    @patch("src.main.t5_grp.visualization.diagram_generator.os.makedirs")
+    @patch(
+        "src.main.t5_grp.visualization.diagram_generator.open",
+        new_callable=unittest.mock.mock_open,
+    )
+    def test_generate_html(
+        self, mock_open, mock_makedirs, mock_exists, mock_environment
+    ):
+        """
+        Test the generate_html function.
 
-    test_extract_pipeline_data_missing_stage:
-        Tests the `extract_pipeline_data` function's behavior when a job has a missing stage.
-"""
-# class TestDiagramGenerator(unittest.TestCase):
-#     """
-#         Contains unit tests for the `diagram_generator` functions.
-#
-#         These tests ensure that the `generate_html` and `extract_pipeline_data` functions behave as expected.
-#         """
-#     @patch('builtins.open', new_callable=mock_open)
-#     @patch('os.makedirs')
-#     @patch('os.path.exists')
-#     @patch('t5_grp.visualization.diagram_generator.Environment.get_template')
-#     def test_generate_html(self, mock_get_template, mock_exists, mock_makedirs, mock_open):
-#         """
-#          Tests the `generate_html` function to ensure it generates an HTML file from given pipeline data.
-#
-#          Mocks the file operations and Jinja2 environment to simulate HTML generation without actual file I/O.
-#
-#          Args:
-#              mock_env (MagicMock): Mock for the Jinja2 Environment.
-#              mock_file_loader (MagicMock): Mock for the Jinja2 FileSystemLoader.
-#              mock_open (MagicMock): Mock for the open function.
-#              mock_makedirs (MagicMock): Mock for the os.makedirs function.
-#              mock_exists (MagicMock): Mock for the os.path.exists function.
-#          """
-#         mock_exists.side_effect = [False, True]
-#         mock_template = MagicMock()
-#         mock_get_template.return_value = mock_template
-#         mock_template.render.return_value = '<html></html>'
-#
-#         # 测试数据
-#         data = {
-#             'pipeline': {'name': 'Test Pipeline'},
-#             'stages': ['Build', 'Test', 'Deploy'],
-#             'jobs': [
-#                 {'name': 'build1', 'stage': 'Build'},
-#                 {'name': 'test1', 'stage': 'Test', 'needs': ['build1']},
-#                 {'name': 'deploy1', 'stage': 'Deploy', 'needs': ['test1']}
-#             ]
-#         }
-#
-#         generate_html(data)
-#
-#         mock_template.render.assert_called_once_with(pipeline=extract_pipeline_data(data))
-#         # AssertionError: exists('/Users/yoyowu/NEU/t5_grp/src/src/main') call not found
-#         expected_output_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..','..',  'src', 'main'))
-#         mock_exists.assert_any_call(expected_output_dir)
-#         mock_makedirs.assert_called_once_with(expected_output_dir)
-#
-#         expected_output_path = os.path.join(expected_output_dir, 'output.html')
-#         mock_open.assert_called_once_with(expected_output_path, 'w')
-#         mock_open().write.assert_called_once_with('<html></html>')
-#
-#     def test_extract_pipeline_data(self):
-#         """
-#         Tests the `extract_pipeline_data` function to ensure it correctly processes and extracts pipeline data.
-#
-#         This test checks various aspects, like job dependencies and artifacts, to validate the data extraction logic.
-#         """
-#         data = {
-#             'pipeline': {'name': 'Test Pipeline'},
-#             'stages': ['Build', 'Test', 'Deploy'],
-#             'jobs': [
-#                 {'name': 'build1', 'stage': 'Build'},
-#                 {'name': 'test1', 'stage': 'Test', 'needs': ['build1'], 'artifacts': {'paths': ['artifact1']}},
-#                 {'name': 'deploy1', 'stage': 'Deploy', 'needs': ['test1']}
-#             ]
-#         }
-#
-#         expected_pipeline_data = {
-#             'name': 'Test Pipeline',
-#             'stages': ['Build', 'Test', 'Deploy'],
-#             'jobs': {
-#                 'build1': {
-#                     'stage': 'Build',
-#                     'needs': [],
-#                     'allow_failure': False,
-#                     'id': 'job_build1',
-#                     'position': 0,
-#                     'artifacts': []
-#                 },
-#                 'test1': {
-#                     'stage': 'Test',
-#                     'needs': ['build1'],
-#                     'allow_failure': False,
-#                     'id': 'job_test1',
-#                     'position': 1,
-#                     'artifacts': ['artifact1']
-#                 },
-#                 'deploy1': {
-#                     'stage': 'Deploy',
-#                     'needs': ['test1'],
-#                     'allow_failure': False,
-#                     'id': 'job_deploy1',
-#                     'position': 2,
-#                     'artifacts': []
-#                 }
-#             },
-#             'artifacts': {
-#                 'Test': ['artifact1']
-#             },
-#             'dependencies': [
-#                 {'from': 'job_build1', 'to': 'job_test1', 'fromStage': 'Build', 'toStage': 'Test'},
-#                 {'from': 'job_test1', 'to': 'job_deploy1', 'fromStage': 'Test', 'toStage': 'Deploy'}
-#             ],
-#             'all_artifacts': ['artifact1']
-#         }
-#
-#         pipeline_data = extract_pipeline_data(data)
-#         self.assertEqual(pipeline_data, expected_pipeline_data)
-#
-#     def test_extract_pipeline_data_missing_stage(self):
-#         """
-#         Tests the `extract_pipeline_data` function's behavior when a job has a missing stage.
-#
-#         Ensures that an appropriate exception is raised when a job lacks a stage definition.
-#         """
-#         data = {
-#             'pipeline': {'name': 'Test Pipeline'},
-#             'stages': ['Build', 'Test', 'Deploy'],
-#             'jobs': [
-#                 {'name': 'build1', 'stage': 'Build'},
-#                 {'name': 'test1', 'needs': ['build1']}
-#             ]
-#         }
-#         with self.assertRaises(ValueError) as context:
-#             extract_pipeline_data(data)
-#         self.assertEqual(str(context.exception), "Stage is required for job: test1")
-#
-# if __name__ == '__main__':
-#     unittest.main()
+        This test verifies that the generate_html function correctly creates
+        an HTML file from the provided pipeline data. It mocks the necessary
+        components to ensure that the function behaves as expected without
+        actually creating files or directories.
+
+        Asserts that:
+        - The output directory is created if it does not exist.
+        - The HTML file is opened for writing with the correct path.
+        - The rendered HTML content is written to the file.
+        """
+        # Arrange
+        mock_exists.return_value = False
+        mock_template = MagicMock()
+        mock_environment.return_value.get_template.return_value = mock_template
+        mock_template.render.return_value = "<html></html>"
+
+        data = {
+            "pipeline": {"name": "Test Pipeline"},
+            "stages": ["build", "test"],
+            "jobs": [],
+        }
+
+        # Act
+        generate_html(data)
+
+        # Assert
+        mock_exists.assert_called_once()
+        mock_makedirs.assert_called_once()
+        mock_open.assert_called_once_with(
+            "/Users/yoyowu/NEU/t5_grp/src/main/output.html", "w"
+        )
+        mock_open().write.assert_called_once_with("<html></html>")
+
+    def test_extract_pipeline_data(self):
+        """
+        Test the extract_pipeline_data function.
+
+        This test verifies that the extract_pipeline_data function correctly
+        extracts and organizes pipeline data from the provided YAML data.
+
+        Asserts that:
+        - The pipeline name is correctly extracted.
+        - The jobs are included in the output.
+        - The dependencies are correctly established based on job needs.
+        """
+        # Arrange
+        data = {
+            "pipeline": {"name": "Test Pipeline"},
+            "stages": ["build", "test"],
+            "jobs": [
+                {
+                    "name": "job1",
+                    "stage": "build",
+                    "needs": [],
+                    "artifacts": {"paths": []},
+                },
+                {
+                    "name": "job2",
+                    "stage": "test",
+                    "needs": ["job1"],
+                    "artifacts": {"paths": []},
+                },
+            ],
+        }
+
+        # Act
+        result = extract_pipeline_data(data)
+
+        # Assert
+        self.assertEqual(result["name"], "Test Pipeline")
+        self.assertIn("job1", result["jobs"])
+        self.assertIn("job2", result["jobs"])
+        self.assertEqual(
+            result["dependencies"],
+            [
+                {
+                    "from": "job_job1",
+                    "to": "job_job2",
+                    "fromStage": "build",
+                    "toStage": "test",
+                }
+            ],
+        )
+
+    def test_add_job_info(self):
+        """
+        Test the add_job_info function.
+
+        This test verifies that the add_job_info function correctly adds job
+        information to the pipeline data structure.
+
+        Asserts that:
+        - The job is added to the pipeline information.
+        - The job's stage is correctly set.
+        - No dependencies are added if there are none.
+        """
+        # Arrange
+        pip_info = {"jobs": {}, "dependencies": []}
+        job = {
+            "name": "job1",
+            "stage": "build",
+            "needs": [],
+            "allow_failure": False,
+            "artifacts": {"paths": []},
+        }
+        stage_artifacts = {}
+        all_artifacts = set()
+
+        add_job_info(pip_info, job, "job1", "build", stage_artifacts, all_artifacts)
+
+        # Assert
+        self.assertIn("job1", pip_info["jobs"])
+        self.assertEqual(pip_info["jobs"]["job1"]["stage"], "build")
+        self.assertEqual(pip_info["dependencies"], [])
+
+
+if __name__ == "__main__":
+    unittest.main()

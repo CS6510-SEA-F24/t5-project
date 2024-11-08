@@ -51,6 +51,11 @@ To run all sessions:
 nox -s all
 ```
 
+Install Jinja2 and PyYAML
+```bash
+ pip install Jinja2 PyYAML
+```
+
 Install the dependencies using Poetry:
 
 ```bash
@@ -63,17 +68,30 @@ Build the Project: Build source distribution and wheel files:
 poetry build
 ```
 
+Run app with Poetry:
 ```bash
 poetry run 
 # e.g. poetry run cicd ./test.yaml
 ```
+
 Running Tests To run all unit tests:
 ```bash
 poetry run pytest
 ```
+
 To run tests with coverage reports:
 ```bash
 poetry run pytest --cov=src/ --cov-report=term-missing --cov-fail-under=60
+```
+
+Auto-format Code(Black): Automatically format the code in src/ and tests/ to follow PEP8 guidelines:
+```bash
+poetry run black src
+```
+
+Lint Code (Flake8): Check code style against PEP8 guidelines:
+```bash
+poetry run flake8 src
 ```
 
 ## Pull Request Process

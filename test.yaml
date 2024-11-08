@@ -22,7 +22,7 @@ jobs:
     stage: build
     script:
       - echo "Running static analysis..."
-    allow_failure: false
+    allow_failure: true
 
   - name: unit_test
     stage: test
