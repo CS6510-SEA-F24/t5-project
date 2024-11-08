@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="dae26c06-724e-4ae3-9446-7826dd9cadc3" name="Changes" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Unit Test" />
+        <option value="HTML File" />
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="fix-merge-issue" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;yuanyuan210&quot;
+  }
+}</component>
+  <component name="GitToolBoxStore">
+    <option name="recentBranches">
+      <RecentBranches>
+        <option name="branchesForRepo">
+          <list>
+            <RecentBranchesForRepo>
+              <option name="branches">
+                <list>
+                  <RecentBranch>
+                    <option name="branchName" value="main" />
+                    <option name="lastUsedInstant" value="1730758719" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value=".invalid" />
+                    <option name="lastUsedInstant" value="1730758718" />
+                  </RecentBranch>
+                </list>
+              </option>
+              <option name="repositoryRootUrl" value="file://$PROJECT_DIR$/pygraphviz" />
+            </RecentBranchesForRepo>
+            <RecentBranchesForRepo>
+              <option name="branches">
+                <list>
+                  <RecentBranch>
+                    <option name="branchName" value="fix-merge" />
+                    <option name="lastUsedInstant" value="1731096718" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="main" />
+                    <option name="lastUsedInstant" value="1731096103" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="html_grp" />
+                    <option name="lastUsedInstant" value="1731094553" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="fix-merge-issue" />
+                    <option name="lastUsedInstant" value="1731094013" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="design_doc" />
+                    <option name="lastUsedInstant" value="1731051559" />
+                  </RecentBranch>
+                </list>
+              </option>
+              <option name="repositoryRootUrl" value="file://$PROJECT_DIR$" />
+            </RecentBranchesForRepo>
+          </list>
+        </option>
+      </RecentBranches>
+    </option>
+  </component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/CS6510-SEA-F24/t5-project.git&quot;,
+    &quot;accountId&quot;: &quot;f89f590d-a501-4b5c-82fc-2bc8e5e964ef&quot;
+  }
+}</component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
+  <component name="ProjectId" id="2oDfuSUa3qqof4zKNFYPrXb27NS" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;Python tests.Python tests for noxfile.tests.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for test_diagram_generator.TestDiagramGenerator.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for test_diagram_generator.TestDiagramGenerator.test_add_job_info.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for test_diagram_generator.TestDiagramGenerator.test_extract_pipeline_data.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for test_diagram_generator.TestDiagramGenerator.test_extract_pipeline_data_missing_stage.executor&quot;: &quot;Debug&quot;,
+    &quot;Python tests.Python tests for test_diagram_generator.TestDiagramGenerator.test_generate_html.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for test_example.TestExampleFunction.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for test_example.TestExampleFunction.test_example_function.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for test_example.test_example.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for test_main.TestMainFunction.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for test_main.TestMainFunction.test_main_with_dry_run_command.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for test_main.TestMainFunction.test_main_with_file_path.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for test_main.TestMainFunction.test_main_without_arguments.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for test_yaml_parser.TestYamlParser.test_invalid_yaml.executor&quot;: &quot;Debug&quot;,
+    &quot;Python tests.Python tests in test_diagram_generator.py.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests in test_example.py.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests in test_main.py.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests in test_yaml_parser.py.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;com.codeium.enabled&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;fix-merge&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/yoyowu/NEU/t5_grp/src/tests/test_files&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;ml.llm.LLMConfigurable&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/tests/test_files" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/t5_grp/assets" />
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/src" />
+      <recent name="$PROJECT_DIR$/src/main/t5_grp" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python tests.Python tests in test_main.py">
+    <configuration name="Python tests for test_diagram_generator.TestDiagramGenerator.test_add_job_info" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="t5_grp" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/tests/visualization" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;test_diagram_generator.TestDiagramGenerator.test_add_job_info&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Python tests for test_diagram_generator.TestDiagramGenerator.test_generate_html" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="t5_grp" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/tests/visualization" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;test_diagram_generator.TestDiagramGenerator.test_generate_html&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Python tests in test_diagram_generator.py" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="t5_grp" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/tests/visualization" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/src/tests/visualization/test_diagram_generator.py&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Python tests in test_main.py" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="t5_grp" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/src/tests/test_main.py&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Python tests in test_yaml_parser.py" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="t5_grp" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/tests/parser" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/src/tests/parser/test_yaml_parser.py&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python tests.Python tests in test_main.py" />
+        <item itemvalue="Python tests.Python tests in test_diagram_generator.py" />
+        <item itemvalue="Python tests.Python tests in test_yaml_parser.py" />
+        <item itemvalue="Python tests.Python tests for test_diagram_generator.TestDiagramGenerator.test_generate_html" />
+        <item itemvalue="Python tests.Python tests for test_diagram_generator.TestDiagramGenerator.test_add_job_info" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-b114ca120d71-intellij.indexing.shared.core-IU-242.21829.142" />
+        <option value="bundled-js-predefined-d6986cc7102b-7c0b70fcd90d-JavaScript-IU-242.21829.142" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="dae26c06-724e-4ae3-9446-7826dd9cadc3" name="Changes" comment="" />
+      <created>1730409290233</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1730409290233</updated>
+      <workItem from="1730409292195" duration="41687000" />
+      <workItem from="1730521143228" duration="9882000" />
+      <workItem from="1730681735166" duration="26155000" />
+      <workItem from="1730747955671" duration="2101000" />
+      <workItem from="1730756789759" duration="44109000" />
+      <workItem from="1730879778117" duration="9000" />
+      <workItem from="1730880063778" duration="597000" />
+      <workItem from="1730880826303" duration="45000" />
+      <workItem from="1730880874532" duration="32000" />
+      <workItem from="1730909015645" duration="96000" />
+      <workItem from="1730909114555" duration="1253000" />
+      <workItem from="1730911729696" duration="1289000" />
+      <workItem from="1730913031712" duration="1000" />
+      <workItem from="1730913040249" duration="90000" />
+      <workItem from="1730913168124" duration="9472000" />
+      <workItem from="1730931431795" duration="1570000" />
+      <workItem from="1730933876223" duration="10614000" />
+      <workItem from="1730950968603" duration="15425000" />
+      <workItem from="1731011996961" duration="20854000" />
+      <workItem from="1731046915576" duration="18980000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="origin/graphviz" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/t5_project$.coverage" NAME=" Coverage Results" MODIFIED="1730528595712" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/t5_grp$.coverage" NAME=" Coverage Results" MODIFIED="1731095418296" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/tests" />
+    <SUITE FILE_PATH="coverage/t5_project$main.coverage" NAME="main Coverage Results" MODIFIED="1730524308317" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+  </component>
+</project>
