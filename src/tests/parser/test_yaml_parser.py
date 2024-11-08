@@ -1,3 +1,4 @@
+import os
 import unittest
 from src.main.t5_grp.parser.yaml_parser import parse_yaml
 
@@ -30,7 +31,9 @@ class TestYamlParser(unittest.TestCase):
         Ensures that the function correctly parses the file
         and the resulting data contains expected keys.
         """
-        file_path = "src/tests/test_files/valid.yaml"
+        file_path = os.path.join(
+            os.path.dirname(__file__), "../test_files/valid.yaml"
+        )
         result = parse_yaml(file_path)
         self.assertIsNotNone(result)
         self.assertIn("pipeline", result)
