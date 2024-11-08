@@ -10,24 +10,25 @@ packages = [
     { include = "t5_grp", from = "src/main" }
 ]
 
-
 [tool.poetry.dependencies]
 python = "^3.12"
 requests = "^2.32.3"
 pyyaml = "^6.0.2"
 graphviz = "^0.20.3"
 GitPython = "^3.1.24"
+jinja2 = "^3.1.4"
+selenium = "^4.26.1"
 
 [tool.poetry.dev-dependencies]
-pytest = "^7.2.2"               # Pytest Test
+pytest = "^7.4.4"               # Pytest Test
 pytest-cov = "^4.0.0"           # Pytest coverage plugin to check code coverage
-black = "^24.8.0"               # Black automatic code formatting
-
-[tool.poetry.group.dev.dependencies]
+black = "^24.10.0"
+flake8 = ">=6.0.0,<8.0.0"
 nox = "^2024.4.15"
 
+
 [tool.poetry.scripts]
-cicd = "t5_grp.main:main"
+cicd = "src.main.t5_grp.main:cli"
 
 [tool.pytest.ini_options]
 testpaths = [
@@ -37,6 +38,11 @@ pythonpath = [
     ".",
     "./src"
 ]
+[tool.black]
+line-length = 88
+target-version = ['py36', 'py37', 'py38', 'py39', 'py310']
+
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+

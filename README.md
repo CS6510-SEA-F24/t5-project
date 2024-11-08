@@ -1,6 +1,6 @@
 # t5_grp
 
-A tool to generate and visualize pipeline diagrams.
+This project provides a tool for generating visual representations of CI/CD pipelines using data defined in YAML files. The tool leverages Jinja2 for templating and creates an HTML output that visually represents the stages and jobs within a pipeline, including their dependencies and artifacts.
 
 
 ## Table of Contents
@@ -16,6 +16,10 @@ A tool to generate and visualize pipeline diagrams.
 - [License]
 
 ## Features (WIP)
+- YAML Parsing: Parses CI/CD configuration defined in YAML format. 
+- HTML Generation: Generates a visually appealing HTML representation of the pipeline.
+- Dynamic Visualization: Displays stages, jobs, and their relationships, including artifacts.
+- Customizable Styles: Uses CSS for styling, allowing for easy customization of the visual output.
 
 ## Development Setup
 
@@ -24,6 +28,9 @@ A tool to generate and visualize pipeline diagrams.
 To use this project, you need:
 
 - Python 3.12 or higher
+- Required Python packages:
+  - - Jinja2
+  - - PyYAML
 - Poetry (for dependency management)
 
 ### Build Instructions
@@ -44,6 +51,11 @@ To run all sessions:
 nox -s all
 ```
 
+Install Jinja2 and PyYAML
+```bash
+ pip install Jinja2 PyYAML
+```
+
 Install the dependencies using Poetry:
 
 ```bash
@@ -56,9 +68,30 @@ Build the Project: Build source distribution and wheel files:
 poetry build
 ```
 
+Run app with Poetry:
 ```bash
 poetry run 
-# e.g. poetry run cicd test.yaml
+# e.g. poetry run cicd ./test.yaml
+```
+
+Running Tests To run all unit tests:
+```bash
+poetry run pytest
+```
+
+To run tests with coverage reports:
+```bash
+poetry run pytest --cov=src/ --cov-report=term-missing --cov-fail-under=60
+```
+
+Auto-format Code(Black): Automatically format the code in src/ and tests/ to follow PEP8 guidelines:
+```bash
+poetry run black src
+```
+
+Lint Code (Flake8): Check code style against PEP8 guidelines:
+```bash
+poetry run flake8 src
 ```
 
 ## Pull Request Process
