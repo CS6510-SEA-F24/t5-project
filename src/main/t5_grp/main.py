@@ -1,5 +1,5 @@
-from t5_grp.parser import yaml_parser
-from t5_grp.visualization import diagram_generator
+from .parser import yaml_parser
+from .visualization import diagram_generator
 import argparse
 
 """

@@ -45,7 +45,7 @@ jobs:
 
       - name: Run Tests and Coverage
         env:
-          PYTHONPATH: ${{ github.workspace }}/src:$PYTHONPATH
+          PYTHONPATH: ${{ github.workspace }}/src
         run: |
           mkdir -p reports/tests
           mkdir -p htmlcov
