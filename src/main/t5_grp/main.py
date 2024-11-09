@@ -1,6 +1,6 @@
-from .parser import yaml_parser
 from .visualization import diagram_generator
 import argparse
+from .parser import yaml_parser
 
 """
 This serves as the entry point for generating CI/CD pipeline visualizations
