@@ -24,7 +24,7 @@ class TestMainFunction(unittest.TestCase):
 
         # Create a temporary YAML file for testing
         test_yaml_path = "test.yaml"
-        with open(test_yaml_path, 'w') as f:
+        with open(test_yaml_path, "w") as f:
             f.write("pipeline:\n  name: P1")
 
         try:

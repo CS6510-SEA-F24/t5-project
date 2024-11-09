@@ -25,5 +25,5 @@ htmlcov/
 
 # Ignore Mac OS files
 .DS_Store
-
+.idea/
 .idea/workspace.xml
