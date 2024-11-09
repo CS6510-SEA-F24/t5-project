@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import patch
-from t5_grp.main import main
+from src.main.t5_grp.main import main
 
 """
 Unit tests for the `main` function in the t5_grp.main module.
