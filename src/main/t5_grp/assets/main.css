@@ -1,0 +1,159 @@
+:root {
+    --background-color: #f3f3f3;
+    --main-font: Arial, sans-serif;
+    --border-color: #000;
+    --light-border-color: #d3d3d3;
+    --padding: 20px;
+    --margin-bottom: 20px;
+    --stage-min-width: 200px;
+    --job-min-width: 80px;
+    --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    --arrow-fill: #666;
+    --arrow-stroke: #000;
+}
+
+
+body {
+    font-family: var(--main-font);
+    padding: var(--padding);
+    background-color: var(--background-color);
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: var(--margin-bottom);
+}
+
+
+.pipeline {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    padding: 20px;
+    position: relative;
+}
+
+.stages-container {
+    position: relative;
+    display: flex;
+    gap: 60px;
+    margin-bottom: 150px;
+    min-height: 500px;
+}
+
+
+.stage-wrapper {
+    position: relative;
+    min-width: var(--stage-min-width);
+    min-height: 300px;
+    z-index: 1;
+}
+
+.stage {
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    padding: 20px;
+    min-width: var(--stage-min-width);
+    background-color: white;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.stage-title {
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+
+.job {
+    border: 1.5px solid var(--border-color);
+    border-radius: 5px;
+    margin: 40px 0;
+    padding: 10px;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+    background-color: white;
+    order: attr(data-order);
+}
+
+.job[data-allow-failure="true"] {
+    background-color: #f0f0f0;
+}
+
+
+.stage-artifacts {
+    position: absolute;
+    left: 50%;
+    bottom: -120px;
+    transform: translateX(-50%);
+    z-index: 1;
+}
+
+.artifacts-box {
+    border: 1.5px solid #0066cc;
+    border-radius: 5px;
+    padding: 15px;
+    background-color: #f0f8ff;
+    min-width: 200px;
+}
+
+.artifacts-title {
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.artifacts-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.artifacts-list li {
+    margin: 5px 0;
+}
+
+
+.arrows {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+    overflow: visible;
+}
+
+.arrows path {
+    fill: none;
+    stroke: var(--arrow-stroke);
+    stroke-width:1.5;
+    transition: all 0.3s ease;
+    opacity: 0.85;
+}
+
+#arrowhead {
+    fill: var(--arrow-fill);
+}
+
+.pipeline-arrow {
+    fill: none;
+    stroke: var(--arrow-stroke);
+    stroke-width: 1;
+    marker-end: url(#arrowhead);
+    pointer-events: none;
+    opacity: 0.9;
+}
+
+
+.empty-stage {
+    visibility: hidden;
+    border: none;
+    background: none;
+}
