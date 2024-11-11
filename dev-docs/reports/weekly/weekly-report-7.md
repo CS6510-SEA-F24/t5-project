@@ -10,6 +10,7 @@
 | Add GRP_design_doc.md and Graphical Representation Tool Selection document   | 1      |
 | Add CI workflow for GitHub Actions                                    | 1      |
 
+> Good throughput this week. Keep it up! 
 
 # Carry over tasks 
 
@@ -33,6 +34,8 @@
 - Adding GRP_design_doc.md and Documentation for Graphical Representation Tool Selection:
   - I wrote and added the GRP_design_doc.md document, which details the design concepts and implementation specifics of the project. Additionally, I selected suitable graphical representation tools and documented them for team reference.
 
+
+
 # What did not work this week? 
 - NA
 
@@ -41,3 +44,7 @@
 - Graphical Representation of Pipelines (GRP)Design Document（https://github.com/CS6510-SEA-F24/t5-project/blob/ec26660b53255b8e002842cd63aff49a4115a4dd/dev-docs/design_doc/GRP_design_doc.md）
 - Graphical Representation of Pipelines Design Doc(https://docs.google.com/document/d/1EBjUZghnbNYWNWvdYkpaDX_hCFstS53lY5C7ZLWqFdU/edit?usp=sharing)
 - GitLab pipeline (https://docs.gitlab.com/ee/ci/pipelines/)
+
+
+> Let's get the testing of the output with Selenium up and running and then we can talk about 
+> some more features to add to the tool. 
