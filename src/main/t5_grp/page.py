@@ -1,12 +1,12 @@
 """
 Page Object Model classes for Selenium WebDriver interactions.
-
 This is implements the Page Object pattern for the CI/CD pipeline
-visualizationweb interface. It provides classes to encapsulate web
+visualization web interface. It provides classes to encapsulate web
 element interactions and verifications for different pages.
 """
-
 from selenium.webdriver.common.by import By
+import os
+import subprocess
 
 
 class BasePage:
@@ -15,11 +15,26 @@ class BasePage:
     def __init__(self, driver):
         """
         Initialize base page with WebDriver instance.
-
         Args:
             driver: Selenium WebDriver instance for browser control.
         """
         self.driver = driver
+
+    def start_http_server(self, base_dir, port=8000):
+        """
+        Starts a simple HTTP server.
+
+        Args:
+            base_dir (str): The base directory for the project.
+            port (int, optional): The port number for the HTTP server.
+                                Default is 8000.
+
+        Returns:
+            subprocess.Popen: The process of the started server.
+        """
+        os.chdir(os.path.join(base_dir, 'src/main'))
+        server = subprocess.Popen(['python', '-m', 'http.server', str(port)])
+        return server
 
 
 class MainPage(BasePage):
@@ -28,7 +43,6 @@ class MainPage(BasePage):
     def is_title_matches(self):
         """
         Check if page title contains expected pipeline name.
-
         Returns:
             bool: True if title contains 'P1', False otherwise.
         """
@@ -37,7 +51,6 @@ class MainPage(BasePage):
     def get_pipeline_title(self):
         """
         Get pipeline title from h1 element.
-
         Returns:
             str: Text content of the h1 element.
         """
@@ -50,7 +63,6 @@ class OutputPage(BasePage):
     def is_pipeline_displayed(self):
         """
         Check if pipeline visualization is present.
-
         Returns:
             bool: True if pipeline element exists, False otherwise.
         """
