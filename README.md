@@ -56,6 +56,11 @@ Install Jinja2 and PyYAML
  pip install Jinja2 PyYAML
 ```
 
+Install Selenium:
+```bash
+pip install selenium
+```
+
 Install the dependencies using Poetry:
 
 ```bash
@@ -71,7 +76,9 @@ poetry build
 Run app with Poetry:
 ```bash
 poetry run 
-# e.g. poetry run cicd ./test.yaml
+# e.g. poetry run python -m src.main.t5_grp.main
+# e.g. poetry run python -m src.main.t5_grp.main -y custom.yaml -d /custom/dir -c /custom/chromedriver
+# e.g. poetry run python -m src.main.t5_grp.main -y /Users/yoyowu/NEU/t5_grp/src/tests/test_files/valid.yaml -d /Users/yoyowu/NEU/t5_grp -c /Users/yoyowu/Downloads/chromedriver
 ```
 
 Running Tests To run all unit tests:
@@ -86,13 +93,14 @@ poetry run pytest --cov=src/ --cov-report=term-missing --cov-fail-under=60
 
 Auto-format Code(Black): Automatically format the code in src/ and tests/ to follow PEP8 guidelines:
 ```bash
-poetry run black src
+# poetry run black src
 ```
 
 Lint Code (Flake8): Check code style against PEP8 guidelines:
 ```bash
 poetry run flake8 src
 ```
+
 
 ## Pull Request Process
 

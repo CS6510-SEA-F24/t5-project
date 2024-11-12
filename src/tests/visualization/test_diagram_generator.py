@@ -138,7 +138,14 @@ class TestDiagramGenerator(unittest.TestCase):
         stage_artifacts = {}
         all_artifacts = set()
 
-        add_job_info(pip_info, job, "job1", "build", stage_artifacts, all_artifacts)
+        add_job_info(
+            pip_info,
+            job,
+            "job1",
+            "build",
+            stage_artifacts,
+            all_artifacts
+        )
 
         # Assert
         self.assertIn("job1", pip_info["jobs"])

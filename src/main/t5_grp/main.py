@@ -1,4 +1,3 @@
-
 import os
 import subprocess
 import time
@@ -9,7 +8,8 @@ from selenium.webdriver.support.wait import WebDriverWait
 from .visualization import diagram_generator
 import argparse
 from .parser import yaml_parser
-from .page import MainPage, OutputPage  # Importing page objects
+from .page import MainPage, OutputPage
+
 
 def start_http_server(base_dir, port=8000):
     """
@@ -17,7 +17,8 @@ def start_http_server(base_dir, port=8000):
 
     Args:
         base_dir (str): The base directory for the project.
-        port (int, optional): The port number for the HTTP server. Default is 8000.
+        port (int, optional): The port number for the HTTP server.
+                            Default is 8000.
 
     Returns:
         subprocess.Popen: The process of the started server.
@@ -26,6 +27,7 @@ def start_http_server(base_dir, port=8000):
     server = subprocess.Popen(['python', '-m', 'http.server', str(port)])
     time.sleep(2)
     return server
+
 
 def open_browser(url, chrome_driver_path):
     """
@@ -37,10 +39,13 @@ def open_browser(url, chrome_driver_path):
     """
     print(f"Using ChromeDriver at: {chrome_driver_path}")
     chrome_options = webdriver.ChromeOptions()
-    chrome_options.binary_location = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+    chrome_options.binary_location = (
+        "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+    )
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
-    # chrome_options.add_argument("--headless")  # Optional: run in headless mode
+    # Optional: run in headless mode
+    # chrome_options.add_argument("--headless")
     driver = webdriver.Chrome(options=chrome_options)
     driver.get(url)
     # Wait for the page element to load
@@ -64,9 +69,11 @@ def open_browser(url, chrome_driver_path):
     input("Press Enter to close the browser...")
     driver.quit()
 
+
 def main(yaml_file_path, base_dir, chrome_driver_path):
     """
-    Main function to generate CI/CD pipeline visualization and open it in a browser.
+    Main function to generate CI/CD pipeline visualization and open it in a
+    browser.
 
     Args:
         yaml_file_path (str): Path to the YAML file.
@@ -85,18 +92,39 @@ def main(yaml_file_path, base_dir, chrome_driver_path):
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
+
 def cli():
     """
-    Command Line Interface (CLI) function to parse command line arguments and invoke the main function.
+    Command Line Interface (CLI) function to parse command line arguments and
+    invoke the main function.
     """
+    default_yaml = os.path.join(
+        os.getcwd(),
+        "src/tests/test_files/valid.yaml"  # Default YAML path
+    )
+    default_chrome = "/usr/local/bin/chromedriver"
+
     parser = argparse.ArgumentParser(
         description="Generate CI/CD pipeline visualization from YAML file."
     )
-    parser.add_argument("yaml_file", help="Path to CI/CD config YAML file.")
-    parser.add_argument("base_dir", help="Base directory for the project.")
-    parser.add_argument("chrome_driver", help="Path to the Chrome driver executable.")
+    parser.add_argument(
+        "-y", "--yaml",
+        default=default_yaml,
+        help="Path to CI/CD config YAML file"
+    )
+    parser.add_argument(
+        "-d", "--dir",
+        default=os.getcwd(),
+        help="Base directory for the project"
+    )
+    parser.add_argument(
+        "-c", "--chrome",
+        default=default_chrome,
+        help="Path to the Chrome driver executable"
+    )
     args = parser.parse_args()
-    main(args.yaml_file, args.base_dir, args.chrome_driver)
+    main(args.yaml, args.dir, args.chrome)
+
 
 if __name__ == "__main__":
     cli()
