@@ -19,6 +19,7 @@ class BasePage:
             driver: Selenium WebDriver instance for browser control.
         """
         self.driver = driver
+        self.server = None
 
     def start_http_server(self, base_dir, port=8000):
         """
@@ -33,8 +34,14 @@ class BasePage:
             subprocess.Popen: The process of the started server.
         """
         os.chdir(os.path.join(base_dir, 'src/main'))
-        server = subprocess.Popen(['python', '-m', 'http.server', str(port)])
-        return server
+        self.server = subprocess.Popen(['python', '-m', 'http.server', str(port)])
+        return self.server
+
+    def stop_http_server(self):
+        """Stops the HTTP server if it is running."""
+        if self.server:
+            self.server.terminate()
+            self.server.wait()
 
 
 class MainPage(BasePage):
@@ -54,7 +61,7 @@ class MainPage(BasePage):
         Returns:
             str: Text content of the h1 element.
         """
-        return self.driver.find_element(By.TAG_NAME, "h1").text
+        return self.driver.find_element(By.ID, "pipeline-title").text
 
 
 class OutputPage(BasePage):
