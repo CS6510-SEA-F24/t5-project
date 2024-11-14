@@ -36,7 +36,7 @@ jobs:
         run: |
           mkdir -p reports/tests
           mkdir -p htmlcov
-          pytest -m "not browser"
+          poetry run pytest -m "not browser"
       - name: List generated files for debug
         run: |
           ls -R reports
