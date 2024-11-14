@@ -38,9 +38,8 @@ def generate_html(data: dict[str, Any]) -> None:
     html_output = template.render(pipeline=pipeline_data)
 
     # Ensure the output directory exists
-    output_dir = os.path.abspath(
-        os.path.join(os.path.dirname(__file__), "..", "..")
-    )
+    output_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                              "..", ".."))
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
@@ -83,8 +82,11 @@ def extract_pipeline_data(data: dict[str, Any]) -> dict[str, Any]:
 
         if job_name:
             add_job_info(
-                pipeline_info, job, job_name, stage_name,
-                stage_artifacts, all_artifacts
+                pipeline_info,
+                job, job_name,
+                stage_name,
+                stage_artifacts,
+                all_artifacts
             )
 
     # Adding artifacts information to each stage

@@ -15,44 +15,43 @@
     <div class="stages-container">
         <!-- Loop through each stage in the pipeline -->
         {% for stage in pipeline.stages %}
-        <div class="stage-wrapper">
-            <div class="stage">
-                <div class="stage-title">{{ stage }}
-                </div>
-                <!-- Loop through each job and check its stage -->
-                {% set stage_jobs = [] %}
-                {% for job_name, job in pipeline.jobs.items() %}
-                    {% if job.stage == stage %}
-                        {% set _ = stage_jobs.append((job_name, job)) %}
-                    {% endif %}
-                {% endfor %}
+            <div class="stage-wrapper">
+                <div class="stage">
+                    <div class="stage-title">{{ stage }}</div>
+                    <!-- Loop through each job and check its stage -->
+                    {% set stage_jobs = [] %}
+                    {% for job_name, job in pipeline.jobs.items() %}
+                        {% if job.stage == stage %}
+                            {% set _ = stage_jobs.append((job_name, job)) %}
+                        {% endif %}
+                    {% endfor %}
 
-                <!-- Sort jobs based on dependency count and position -->
-                {% set sorted_jobs = stage_jobs|sort(attribute='1.dependency_count', reverse=true) %}
-                {% for job_name, job in sorted_jobs %}
-                    <div class="job"
-                         id="job_{{ job_name }}"
-                         data-needs="{{ job.needs|join(',') if job.needs else '' }}"
-                         data-allow-failure="{{ job.allow_failure|default(false)|string|lower }}"
-                         style="order: {{ loop.index }}">  <!-- Add order style -->
-                        {{ job_name }}
-                    </div>
-                {% endfor %}
-            </div>
-            <!-- Check if stage has artifacts -->
-            {% if stage in pipeline.artifacts %}
-            <div class="stage-artifacts">
-                <div class="artifacts-box">
-                    <div class="artifacts-title">{{ stage }} Artifacts</div>
-                    <ul class="artifacts-list">
-                        {% for artifact in pipeline.artifacts[stage] %}
-                        <li>{{ artifact }}</li>
-                        {% endfor %}
-                    </ul>
+                    <!-- Sort jobs based on dependency count and position -->
+                    {% set sorted_jobs = stage_jobs|sort(attribute='1.dependency_count', reverse=true) %}
+                    {% for job_name, job in sorted_jobs %}
+                        <div class="job"
+                             id="job_{{ job_name }}"
+                             data-needs="{{ job.needs|join(',') if job.needs else '' }}"
+                             data-allow-failure="{{ job.allow_failure|default(false)|string|lower }}"
+                             style="order: {{ loop.index }}">  <!-- Add order style -->
+                            {{ job_name }}
+                        </div>
+                    {% endfor %}
                 </div>
+                <!-- Check if stage has artifacts -->
+                {% if stage in pipeline.artifacts %}
+                    <div class="stage-artifacts">
+                        <div class="artifacts-box">
+                            <div class="artifacts-title">{{ stage }} Artifacts</div>
+                            <ul class="artifacts-list">
+                                {% for artifact in pipeline.artifacts[stage] %}
+                                    <li>{{ artifact }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                {% endif %}
             </div>
-            {% endif %}
-        </div>
         {% endfor %}
 
         <!-- All Artifacts -->
@@ -62,15 +61,14 @@
             </div>
             <div class="stage-artifacts">
                 <div class="artifacts-box">
-                <div class="artifacts-title">All Artifacts</div>
-                <ul class="artifacts-list">
-                    {% for artifact in pipeline.all_artifacts %}
-                    <li>{{ artifact }}</li>
-                    {% endfor %}
-                </ul>
+                    <div class="artifacts-title">All Artifacts</div>
+                    <ul class="artifacts-list">
+                        {% for artifact in pipeline.all_artifacts %}
+                            <li>{{ artifact }}</li>
+                        {% endfor %}
+                    </ul>
                 </div>
             </div>
-
         </div>
         <!-- SVG element for drawing arrows between jobs -->
         <svg class="arrows" width="100%" height="100%" preserveAspectRatio="xMinYMin meet">

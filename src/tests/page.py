@@ -1,12 +1,11 @@
 """
 Page Object Model classes for Selenium WebDriver interactions.
-This is implements the Page Object pattern for the CI/CD pipeline
+This implements the Page Object pattern for the CI/CD pipeline
 visualization web interface. It provides classes to encapsulate web
 element interactions and verifications for different pages.
 """
+
 from selenium.webdriver.common.by import By
-import os
-import subprocess
 
 
 class BasePage:
@@ -19,29 +18,6 @@ class BasePage:
             driver: Selenium WebDriver instance for browser control.
         """
         self.driver = driver
-        self.server = None
-
-    def start_http_server(self, base_dir, port=8000):
-        """
-        Starts a simple HTTP server.
-
-        Args:
-            base_dir (str): The base directory for the project.
-            port (int, optional): The port number for the HTTP server.
-                                Default is 8000.
-
-        Returns:
-            subprocess.Popen: The process of the started server.
-        """
-        os.chdir(os.path.join(base_dir, 'src/main'))
-        self.server = subprocess.Popen(['python', '-m', 'http.server', str(port)])
-        return self.server
-
-    def stop_http_server(self):
-        """Stops the HTTP server if it is running."""
-        if self.server:
-            self.server.terminate()
-            self.server.wait()
 
 
 class MainPage(BasePage):
