@@ -31,12 +31,8 @@ class PythonOrgSearch(unittest.TestCase):
                                         options=options)
 
         # Open the local HTML file
-        self.file_path = "file:///Users/yoyowu/NEU/t5_grp/src/main/output.html"
-        if not os.path.isfile(self.file_path[7:]):  # Check if the file exists
-            raise FileNotFoundError(f"The file'{self.file_path}' not exist.")
-
-        self.driver.get(self.file_path)
-        self.base_page = MainPage(self.driver)
+        self.driver.set_page_load_timeout(120)
+        self.driver.get("file:///Users/yoyowu/NEU/t5_grp/src/main/output.html")
 
     def test_search_in_local_output_html(self):
         main_page = MainPage(self.driver)
