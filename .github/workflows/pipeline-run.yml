@@ -41,12 +41,19 @@ jobs:
 
       - name: Set up geckodriver
         run: |
-          sudo apt-get update
-          sudo apt-get install -y firefox
-          GECKODRIVER_VERSION=$(curl -s https://api.github.com/repos/mozilla/geckodriver/releases/latest | grep 'tag_name' | cut -d\" -f4)
-          wget "https://github.com/mozilla/geckodriver/releases/download/$GECKODRIVER_VERSION/geckodriver-$GECKODRIVER_VERSION-linux64.tar.gz"
-          tar -xzf "geckodriver-$GECKODRIVER_VERSION-linux64.tar.gz"
-          sudo mv geckodriver /usr/local/bin/
+          # Check if Firefox is already installed
+          if ! command -v firefox &> /dev/null; then
+            sudo apt-get update
+            sudo apt-get install -y firefox
+          fi
+
+          # Check if geckodriver is already installed
+          if ! command -v geckodriver &> /dev/null; then
+            GECKODRIVER_VERSION=$(curl -s https://api.github.com/repos/mozilla/geckodriver/releases/latest | grep 'tag_name' | cut -d\" -f4)
+            wget "https://github.com/mozilla/geckodriver/releases/download/$GECKODRIVER_VERSION/geckodriver-$GECKODRIVER_VERSION-linux64.tar.gz"
+            tar -xzf "geckodriver-$GECKODRIVER_VERSION-linux64.tar.gz"
+            sudo mv geckodriver /usr/local/bin/
+          fi
 
       - name: Verify pytest is installed
         run: |

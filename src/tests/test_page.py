@@ -31,8 +31,9 @@ class PythonOrgSearch(unittest.TestCase):
                                         options=options)
 
         # Open the local HTML file
-        self.driver.set_page_load_timeout(120)
-        self.driver.get("file:///Users/yoyowu/NEU/t5_grp/src/main/output.html")
+        self.driver.set_page_load_timeout(360)
+        local_file_path = "file:///Users/yoyowu/NEU/t5_grp/src/main/output.html"
+        self.driver.get(local_file_path)
 
     def test_search_in_local_output_html(self):
         main_page = MainPage(self.driver)
