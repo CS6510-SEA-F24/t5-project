@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P1</title>
+    <link rel="stylesheet" href="t5_grp/assets/main.css">
+    <link rel="icon" href="t5_grp/assets/favicon.ico" type="image/x-icon">
+</head>
+<body>
+<!-- Dynamic title for the pipeline -->
+<h1 id="pipeline-title">P1</h1>
+<div class="pipeline">
+    <!-- Container for stages -->
+    <div class="stages-container">
+        <!-- Loop through each stage in the pipeline -->
+        
+            <div class="stage-wrapper">
+                <div class="stage">
+                    <div class="stage-title">build</div>
+                    <!-- Loop through each job and check its stage -->
+                    
+                    
+                        
+                            
+                        
+                    
+                        
+                            
+                        
+                    
+                        
+                    
+                        
+                    
+                        
+                    
+
+                    <!-- Sort jobs based on dependency count and position -->
+                    
+                    
+                        <div class="job"
+                             id="job_compile"
+                             data-needs="static_analysis"
+                             data-allow-failure="false"
+                             style="order: 1">  <!-- Add order style -->
+                            compile
+                        </div>
+                    
+                        <div class="job"
+                             id="job_static_analysis"
+                             data-needs=""
+                             data-allow-failure="true"
+                             style="order: 2">  <!-- Add order style -->
+                            static_analysis
+                        </div>
+                    
+                </div>
+                <!-- Check if stage has artifacts -->
+                
+                    <div class="stage-artifacts">
+                        <div class="artifacts-box">
+                            <div class="artifacts-title">build Artifacts</div>
+                            <ul class="artifacts-list">
+                                
+                                    <li>build/classes/*</li>
+                                
+                                    <li>build/reports/*</li>
+                                
+                            </ul>
+                        </div>
+                    </div>
+                
+            </div>
+        
+            <div class="stage-wrapper">
+                <div class="stage">
+                    <div class="stage-title">test</div>
+                    <!-- Loop through each job and check its stage -->
+                    
+                    
+                        
+                    
+                        
+                    
+                        
+                            
+                        
+                    
+                        
+                    
+                        
+                    
+
+                    <!-- Sort jobs based on dependency count and position -->
+                    
+                    
+                        <div class="job"
+                             id="job_unit_test"
+                             data-needs="compile"
+                             data-allow-failure="false"
+                             style="order: 1">  <!-- Add order style -->
+                            unit_test
+                        </div>
+                    
+                </div>
+                <!-- Check if stage has artifacts -->
+                
+                    <div class="stage-artifacts">
+                        <div class="artifacts-box">
+                            <div class="artifacts-title">test Artifacts</div>
+                            <ul class="artifacts-list">
+                                
+                                    <li>final.jar</li>
+                                
+                            </ul>
+                        </div>
+                    </div>
+                
+            </div>
+        
+            <div class="stage-wrapper">
+                <div class="stage">
+                    <div class="stage-title">doc</div>
+                    <!-- Loop through each job and check its stage -->
+                    
+                    
+                        
+                    
+                        
+                    
+                        
+                    
+                        
+                            
+                        
+                    
+                        
+                    
+
+                    <!-- Sort jobs based on dependency count and position -->
+                    
+                    
+                        <div class="job"
+                             id="job_generate_docs"
+                             data-needs="unit_test"
+                             data-allow-failure="true"
+                             style="order: 1">  <!-- Add order style -->
+                            generate_docs
+                        </div>
+                    
+                </div>
+                <!-- Check if stage has artifacts -->
+                
+            </div>
+        
+            <div class="stage-wrapper">
+                <div class="stage">
+                    <div class="stage-title">deploy</div>
+                    <!-- Loop through each job and check its stage -->
+                    
+                    
+                        
+                    
+                        
+                    
+                        
+                    
+                        
+                    
+                        
+                            
+                        
+                    
+
+                    <!-- Sort jobs based on dependency count and position -->
+                    
+                    
+                        <div class="job"
+                             id="job_publish"
+                             data-needs="generate_docs"
+                             data-allow-failure="false"
+                             style="order: 1">  <!-- Add order style -->
+                            publish
+                        </div>
+                    
+                </div>
+                <!-- Check if stage has artifacts -->
+                
+                    <div class="stage-artifacts">
+                        <div class="artifacts-box">
+                            <div class="artifacts-title">deploy Artifacts</div>
+                            <ul class="artifacts-list">
+                                
+                                    <li>distribution.tgz</li>
+                                
+                                    <li>md5.sum</li>
+                                
+                            </ul>
+                        </div>
+                    </div>
+                
+            </div>
+        
+
+        <!-- All Artifacts -->
+        <div class="stage-wrapper">
+            <div class="stage empty-stage">
+                <!-- empty stage -->
+            </div>
+            <div class="stage-artifacts">
+                <div class="artifacts-box">
+                    <div class="artifacts-title">All Artifacts</div>
+                    <ul class="artifacts-list">
+                        
+                            <li>build/classes/*</li>
+                        
+                            <li>build/reports/*</li>
+                        
+                            <li>distribution.tgz</li>
+                        
+                            <li>final.jar</li>
+                        
+                            <li>md5.sum</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- SVG element for drawing arrows between jobs -->
+        <svg class="arrows" width="100%" height="100%" preserveAspectRatio="xMinYMin meet">
+            <defs>
+                <marker id="arrowhead" markerWidth="8" markerHeight="6"
+                        refX="8" refY="3" orient="auto">
+                    <polygon points="0 0, 8 3, 0 6" fill="#666"/>
+                </marker>
+            </defs>
+        </svg>
+    </div>
+</div>
+<script src="t5_grp/assets/main.js"></script>
+</body>
+</html>
