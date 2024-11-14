@@ -11,41 +11,55 @@ on:
       - main
 jobs:
   build:
-    if: github.event_name == 'pull_request'||(github.event_name == 'push' &&
-      github.ref == 'refs/heads/main')
+    if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.12"
+
       - name: Install Poetry
         run: |
           python -m pip install poetry
           poetry --version
+
       - name: Update Lock File
         run: poetry lock
+
       - name: Install dependencies
         run: |
           poetry install
+
+      - name: Set up Chrome
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: stable
+          install-chromedriver: true
+          install-dependencies: true
+
       - name: Run Tests and Coverage
         env:
           PYTHONPATH: ${{ github.workspace }}/src
         run: |
           mkdir -p reports/tests
           mkdir -p htmlcov
-          poetry run pytest -m "not browser"
+          poetry run pytest
+
       - name: List generated files for debug
         run: |
           ls -R reports
+
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v3
         with:
           name: test-results
           path: reports/tests/
+
       - name: Upload Coverage Report
         if: always()
         uses: actions/upload-artifact@v3
