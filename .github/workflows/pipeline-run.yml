@@ -30,9 +30,6 @@ jobs:
       - name: Install dependencies
         run: |
           poetry install
-      - name: Verify pytest is installed
-        run: |
-          poetry run pytest --version
       - name: Run Tests and Coverage
         env:
           PYTHONPATH: ${{ github.workspace }}/src
