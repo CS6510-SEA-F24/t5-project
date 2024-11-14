@@ -17,7 +17,7 @@ jobs:
   build:
     # Run the job if the PR is opened, or when pushed to main branch
     if: github.event_name == 'pull_request'||(github.event_name == 'push' && github.ref == 'refs/heads/main')
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -39,21 +39,18 @@ jobs:
         run: |
           poetry install
 
-      - name: Set up geckodriver
+      - name: Set up Chrome and ChromeDriver
         run: |
-          # Check if Firefox is already installed
-          if ! command -v firefox &> /dev/null; then
-            sudo apt-get update
-            sudo apt-get install -y firefox
-          fi
+          wget -O chrome-mac-arm64.zip https://storage.googleapis.com/chrome-for-testing-public/131.0.6778.70/mac-arm64/chrome-mac-arm64.zip
+          unzip chrome-mac-arm64.zip -d chrome-mac-arm64
+          sudo mv chrome-mac-arm64/chrome-mac-arm64 /Applications/Google\ Chrome.app
 
-          # Check if geckodriver is already installed
-          if ! command -v geckodriver &> /dev/null; then
-            GECKODRIVER_VERSION=$(curl -s https://api.github.com/repos/mozilla/geckodriver/releases/latest | grep 'tag_name' | cut -d\" -f4)
-            wget "https://github.com/mozilla/geckodriver/releases/download/$GECKODRIVER_VERSION/geckodriver-$GECKODRIVER_VERSION-linux64.tar.gz"
-            tar -xzf "geckodriver-$GECKODRIVER_VERSION-linux64.tar.gz"
-            sudo mv geckodriver /usr/local/bin/
-          fi
+          wget -O chromedriver-mac-arm64.zip https://storage.googleapis.com/chrome-for-testing-public/131.0.6778.69/mac-arm64/chromedriver-mac-arm64.zip
+          unzip chromedriver-mac-arm64.zip -d chromedriver-mac-arm64
+          sudo mv chromedriver-mac-arm64/chromedriver /usr/local/bin/chromedriver
+          sudo chmod +x /usr/local/bin/chromedriver
+          
+          /usr/local/bin/chromedriver --version
 
       - name: Verify pytest is installed
         run: |
