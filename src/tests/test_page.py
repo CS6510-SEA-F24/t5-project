@@ -7,7 +7,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from src.tests.page import MainPage, OutputPage
 import pytest
-
+import time
 
 @pytest.mark.browser
 class PythonOrgSearch(unittest.TestCase):
@@ -15,7 +15,6 @@ class PythonOrgSearch(unittest.TestCase):
 
     def setUp(self):
         options = Options()
-        options.add_argument("--headless")
         driver_path = self.get_chromedriver_path()
 
         # Verify driver path
@@ -57,6 +56,7 @@ class PythonOrgSearch(unittest.TestCase):
         search_results_page = OutputPage(self.driver)
         self.assertTrue(search_results_page.is_pipeline_displayed(),
                         "Pipeline is not displayed.")
+        time.sleep(5)
 
     def tearDown(self):
         try:
