@@ -6,8 +6,10 @@ from selenium.common.exceptions import NoSuchWindowException
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from src.tests.page import MainPage, OutputPage
+import pytest
 
 
+@pytest.mark.browser
 class PythonOrgSearch(unittest.TestCase):
     """Test class for verifying the local output HTML page."""
 

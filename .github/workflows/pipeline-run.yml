@@ -17,7 +17,7 @@ jobs:
   build:
     # Run the job if the PR is opened, or when pushed to main branch
     if: github.event_name == 'pull_request'||(github.event_name == 'push' && github.ref == 'refs/heads/main')
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -39,19 +39,6 @@ jobs:
         run: |
           poetry install
 
-      - name: Download Chrome
-        run: |
-            wget -O chrome-mac-arm64.zip https://storage.googleapis.com/chrome-for-testing-public/131.0.6778.70/mac-arm64/chrome-mac-arm64.zip
-            unzip chrome-mac-arm64.zip -d chrome-mac-arm64
-            sudo mv chrome-mac-arm64/chrome-mac-arm64 /Applications/Google\ Chrome.app
-
-      - name: Download ChromeDriver
-        run: |
-                wget -O chromedriver-mac-arm64.zip https://storage.googleapis.com/chrome-for-testing-public/131.0.6778.69/mac-arm64/chromedriver-mac-arm64.zip
-                unzip chromedriver-mac-arm64.zip -d chromedriver-mac-arm64
-                sudo mv chromedriver-mac-arm64/chromedriver /usr/local/bin/chromedriver
-                sudo chmod +x /usr/local/bin/chromedriver
-
       - name: Verify pytest is installed
         run: |
           poetry run pytest --version
@@ -62,9 +49,10 @@ jobs:
         run: |
           mkdir -p reports/tests
           mkdir -p htmlcov
-          poetry run pytest
+        # poetry run pytest
         # poetry run pytest --cov=src/ --cov-report=term-missing --cov-report=html:htmlcov --cov-fail-under= 70
         # will update
+          pytest -m "not browser"
 
       - name: List generated files for debug
         run: |

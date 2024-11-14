@@ -85,6 +85,9 @@ Running Tests To run all unit tests:
 poetry run pytest
 ```
 
+```bash
+pytest -m "not browser"
+```
 To run tests with coverage reports:
 ```bash
 poetry run pytest --cov=src/ --cov-report=term-missing --cov-fail-under=60
