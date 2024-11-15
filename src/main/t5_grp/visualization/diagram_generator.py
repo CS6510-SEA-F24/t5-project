@@ -8,7 +8,7 @@ pipelines.
 """
 
 
-def generate_html(data: dict[str, Any]) -> None:
+def generate_html(data: dict[str, Any], output_dir: str) -> None:
     """
     Generates an HTML file visualizing the CI/CD pipeline stages and jobs.
 
@@ -38,8 +38,6 @@ def generate_html(data: dict[str, Any]) -> None:
     html_output = template.render(pipeline=pipeline_data)
 
     # Ensure the output directory exists
-    output_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                              "..", ".."))
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
@@ -50,7 +48,7 @@ def generate_html(data: dict[str, Any]) -> None:
     with open(output_path, "w") as file:
         file.write(html_output)
 
-    print("Generated output.html successfully.")
+    print(f"Generated output.html successfullyat: {output_path}")
 
 
 def extract_pipeline_data(data: dict[str, Any]) -> dict[str, Any]:

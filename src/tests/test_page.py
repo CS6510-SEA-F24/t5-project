@@ -37,7 +37,7 @@ class PythonOrgSearch(unittest.TestCase):
 
         # Step 3: Find and load the generated output.html
         if os.environ.get('GITHUB_WORKSPACE'):
-            base_dir = os.environ.get('GITHUB_WORKSPACE')
+            base_dir = os.path.join(os.environ.get('GITHUB_WORKSPACE'), 'src', 'main')
         else:
             base_dir = os.path.join(
                 os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
