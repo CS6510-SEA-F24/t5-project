@@ -56,11 +56,14 @@ jobs:
         env:
             PYTHONPATH: ${{ github.workspace }}/src
             CHROMEDRIVER_PATH: ${{ steps.setup-chrome.outputs.chromedriver-path }}
-            LOCAL_HTML_PATH: ${{ github.workspace }}/output.html
+            GITHUB_WORKSPACE: ${{ github.workspace }}
+            LOCAL_HTML_PATH: ${{ github.workspace }}/src/main/output.html
         run: |
           mkdir -p reports/tests
           mkdir -p htmlcov
-          poetry run pytest
+          poetry run pytest src/tests/parser/test_yaml_parser.py src/tests/test_main.py
+          poetry run pytest src/tests/test_page.py
+          poetry run pytest --ignore=src/tests/parser/test_yaml_parser.py --ignore=src/tests/test_main.py --ignore=src/tests/test_page.py
 
       - name: List generated files for debug
         run: |

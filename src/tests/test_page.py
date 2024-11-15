@@ -1,43 +1,58 @@
-
 import os
+import time
 import unittest
+
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchWindowException
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
-from src.tests.page import MainPage, OutputPage
-import time
+from page import MainPage, OutputPage
 
 
 class PythonOrgSearch(unittest.TestCase):
     """Test class for verifying the local output HTML page."""
 
     def setUp(self):
+        # Step 1: Generate the output.html first
+        test_yaml_path = os.path.join(os.path.dirname(__file__), "test_files", "valid.yaml")
+        from src.main.t5_grp.main import main
+        main(test_yaml_path)
+
+        # Step 2: Set up Selenium WebDriver
         options = Options()
-        # for GitAction debug
         options.add_argument('--headless')
         options.add_argument('--disable-gpu')
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-dev-shm-usage')
         driver_path = self.get_chromedriver_path()
 
-        # Verify driver path
         print(f"ChromeDriver path: {driver_path}")
         if not os.path.isfile(driver_path):
             raise ValueError(f"The path is not a valid file: {driver_path}")
 
         if not os.access(driver_path, os.X_OK):
-            raise PermissionError(f"The path is not an executable file: "
-                                  f"{driver_path}")
+            raise PermissionError(f"The path is not an executable file: {driver_path}")
 
-        self.driver = webdriver.Chrome(service=Service(driver_path),
-                                       options=options)
+        self.driver = webdriver.Chrome(service=Service(driver_path), options=options)
 
-        # Open the local HTML file
-        local_file_path = os.path.abspath(os.getenv('LOCAL_HTML_PATH', '/Users/yoyowu/NEU/t5_grp/src/main/output.html'))
-        print(f"Local HTML file path: {local_file_path}")
+        # Step 3: Find and load the generated output.html
+        if os.environ.get('GITHUB_WORKSPACE'):
+            base_dir = os.environ.get('GITHUB_WORKSPACE')
+        else:
+            base_dir = os.path.join(
+                os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
+                'src', 'main'
+            )
+
+        local_file_path = os.path.join(base_dir, "output.html")
+        print(f"Looking for output.html at: {local_file_path}")
+
         if not os.path.exists(local_file_path):
-            raise FileNotFoundError(f"The specified HTML file does not exist: {local_file_path}")
+            raise FileNotFoundError(
+                f"The specified HTML file does not exist: {local_file_path}\n"
+                f"Current directory: {os.getcwd()}\n"
+                f"Directory contents: {os.listdir(os.path.dirname(local_file_path))}"
+            )
 
         self.driver.set_page_load_timeout(360)
         self.driver.get("file://" + local_file_path)
