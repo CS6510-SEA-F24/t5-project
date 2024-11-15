@@ -18,6 +18,9 @@ class PythonOrgSearch(unittest.TestCase):
         # Determine the appropriate ChromeDriver path based on the environment
         if os.environ.get('GITHUB_ACTIONS'):
             driver_path = "/usr/local/bin/chromedriver"
+            # Add debug information for GitHub Actions environment
+            print("Running in GitHub Actions environment")
+            print(f"Checking if ChromeDriver exists at {driver_path}...")
         else:
             driver_path = self.get_chromedriver_path()
 

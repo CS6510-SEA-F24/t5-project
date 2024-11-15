@@ -41,6 +41,15 @@ jobs:
           install-chromedriver: true
           install-dependencies: true
 
+      - name: Verify ChromeDriver Installation
+        run: |
+          if [ ! -f /usr/local/bin/chromedriver ]; then
+            echo "ChromeDriver is not installed at /usr/local/bin/chromedriver"
+            exit 1
+          fi
+          echo "ChromeDriver installed successfully at /usr/local/bin/chromedriver"
+          ls -l /usr/local/bin/chromedriver
+
       - name: Run Tests and Coverage
         env:
           PYTHONPATH: ${{ github.workspace }}/src
