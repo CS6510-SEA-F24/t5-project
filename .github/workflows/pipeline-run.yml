@@ -61,6 +61,8 @@ jobs:
         run: |
           mkdir -p reports/tests
           mkdir -p htmlcov
+          # Ensure src/main directory exists
+          mkdir -p ${{ github.workspace }}/src/main
           poetry run pytest src/tests/parser/test_yaml_parser.py src/tests/test_main.py
           poetry run pytest src/tests/test_page.py
           poetry run pytest --ignore=src/tests/parser/test_yaml_parser.py --ignore=src/tests/test_main.py --ignore=src/tests/test_page.py

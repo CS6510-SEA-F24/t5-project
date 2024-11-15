@@ -7,7 +7,8 @@ license = "MIT"
 readme = "README.md"
 
 packages = [
-    { include = "t5_grp", from = "src/main" }
+    { include = "t5_grp", from = "src/main" },
+    { include = "tests", from = "src" }
 ]
 
 [tool.poetry.dependencies]

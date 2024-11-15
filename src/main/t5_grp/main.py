@@ -1,3 +1,5 @@
+import os
+
 from .visualization import diagram_generator
 import argparse
 from .parser import yaml_parser
@@ -37,8 +39,14 @@ def main(yaml_file_path):
         if data is None:
             print("Failed to parse YAML file or validation error occurred.")
             return
+        # Determine output directory
+        if os.environ.get('GITHUB_WORKSPACE'):
+            output_dir = os.path.join(os.environ.get('GITHUB_WORKSPACE'), 'src', 'main')
+        else:
+            output_dir = os.path.dirname(os.path.dirname(__file__))
+
         # Generate the HTML visualization from the parsed data
-        diagram_generator.generate_html(data)
+        diagram_generator.generate_html(data, output_dir)
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 

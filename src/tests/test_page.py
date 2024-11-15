@@ -6,6 +6,7 @@ from selenium import webdriver
 from selenium.common.exceptions import NoSuchWindowException
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
+from t5_grp.main import main
 from page import MainPage, OutputPage
 
 
@@ -15,7 +16,6 @@ class PythonOrgSearch(unittest.TestCase):
     def setUp(self):
         # Step 1: Generate the output.html first
         test_yaml_path = os.path.join(os.path.dirname(__file__), "test_files", "valid.yaml")
-        from src.main.t5_grp.main import main
         main(test_yaml_path)
 
         # Step 2: Set up Selenium WebDriver
