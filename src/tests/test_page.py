@@ -14,6 +14,11 @@ class PythonOrgSearch(unittest.TestCase):
 
     def setUp(self):
         options = Options()
+        # for GitAction debug
+        options.add_argument('--headless')
+        options.add_argument('--disable-gpu')
+        options.add_argument('--no-sandbox')
+        options.add_argument('--disable-dev-shm-usage')
         driver_path = self.get_chromedriver_path()
 
         # Verify driver path
