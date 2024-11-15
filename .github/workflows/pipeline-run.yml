@@ -35,6 +35,7 @@ jobs:
           poetry install
 
       - name: Set up Chrome
+        id: setup-chrome
         uses: browser-actions/setup-chrome@v1
         with:
           chrome-version: stable
@@ -43,12 +44,8 @@ jobs:
 
       - name: Verify ChromeDriver Installation
         run: |
-          if [ ! -f /usr/local/bin/chromedriver ]; then
-            echo "ChromeDriver is not installed at /usr/local/bin/chromedriver"
-            exit 1
-          fi
-          echo "ChromeDriver installed successfully at /usr/local/bin/chromedriver"
-          ls -l /usr/local/bin/chromedriver
+          echo "ChromeDriver installed at ${{ steps.setup-chrome.outputs.chromedriver-path }}"
+          ${{ steps.setup-chrome.outputs.chromedriver-path }} --version
 
       - name: Run Tests and Coverage
         env:
