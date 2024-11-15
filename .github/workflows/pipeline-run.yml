@@ -38,18 +38,25 @@ jobs:
         id: setup-chrome
         uses: browser-actions/setup-chrome@v1
         with:
-          chrome-version: stable
-          install-chromedriver: true
-          install-dependencies: true
+            chrome-version: 131
+            install-chromedriver: true
+            install-dependencies: true
 
       - name: Verify ChromeDriver Installation
         run: |
-          echo "ChromeDriver installed at ${{ steps.setup-chrome.outputs.chromedriver-path }}"
-          ${{ steps.setup-chrome.outputs.chromedriver-path }} --version
+            echo "ChromeDriver installed at ${{ steps.setup-chrome.outputs.chromedriver-path }}"
+            ${{ steps.setup-chrome.outputs.chromedriver-path }} --version
+
+      - name: Get Chrome Path
+        run: |
+          echo "Google Chrome installed at ${{ steps.setup-chrome.outputs.chrome-path }}"
+          ${{ steps.setup-chrome.outputs.chrome-path }} --version
 
       - name: Run Tests and Coverage
         env:
-          PYTHONPATH: ${{ github.workspace }}/src
+            PYTHONPATH: ${{ github.workspace }}/src
+            CHROMEDRIVER_PATH: ${{ steps.setup-chrome.outputs.chromedriver-path }}
+            LOCAL_HTML_PATH: ${{ github.workspace }}/output.html
         run: |
           mkdir -p reports/tests
           mkdir -p htmlcov
