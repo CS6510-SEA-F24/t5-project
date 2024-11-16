@@ -80,12 +80,7 @@ def extract_pipeline_data(data: dict[str, Any]) -> dict[str, Any]:
 
         if job_name:
             add_job_info(
-                pipeline_info,
-                job,
-                job_name,
-                stage_name,
-                stage_artifacts,
-                all_artifacts
+                pipeline_info, job, job_name, stage_name, stage_artifacts, all_artifacts
             )
 
     # Adding artifacts information to each stage

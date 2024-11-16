@@ -1,4 +1,5 @@
 import os
+import time
 import unittest
 
 from selenium import webdriver
@@ -97,15 +98,14 @@ class PythonOrgSearch(unittest.TestCase):
         main_page = MainPage(self.driver)
         wait = WebDriverWait(self.driver, 10)
         wait.until(lambda driver: driver.title)
-        self.assertTrue(main_page.is_title_matches(),
-                        "Page title doesn't match.")
+        self.assertTrue(main_page.is_title_matches(), "Page title doesn't match.")
         pipeline_title = main_page.get_pipeline_title()
         self.assertTrue(pipeline_title, "Pipeline title is empty.")
         search_results_page = OutputPage(self.driver)
         self.assertTrue(
-            search_results_page.is_pipeline_displayed(),
-            "Pipeline is not displayed."
+            search_results_page.is_pipeline_displayed(), "Pipeline is not displayed."
         )
+        time.sleep(10)
 
     def tearDown(self):
         """
