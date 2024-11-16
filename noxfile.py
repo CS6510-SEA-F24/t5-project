@@ -5,15 +5,16 @@ import nox
 @nox.session
 def tests(session):
     session.run("poetry", "install", external=True)
-    session.run("pytest", "tests/")
+    session.run("pytest", "src/tests/")
 
 
 # Define a session for linting with flake8
 @nox.session
 def lint(session):
     session.run("poetry", "install", external=True)
-    session.run("black", "src/", "tests/")
-    session.run("flake8", "src/", "tests/")
+    session.run("flake8", "src/")
+    session.run("black", "src/")
+
 
 
 # Define a session for building the project

@@ -40,8 +40,8 @@ def main(yaml_file_path):
             print("Failed to parse YAML file or validation error occurred.")
             return
         # Determine output directory
-        if os.environ.get('GITHUB_WORKSPACE'):
-            output_dir = os.path.join(os.environ.get('GITHUB_WORKSPACE'), 'src', 'main')
+        if os.environ.get("GITHUB_WORKSPACE"):
+            output_dir = os.path.join(os.environ.get("GITHUB_WORKSPACE"), "src", "main")
         else:
             output_dir = os.path.dirname(os.path.dirname(__file__))
 

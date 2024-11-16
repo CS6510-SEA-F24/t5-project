@@ -34,8 +34,10 @@ class TestMainFunction(unittest.TestCase):
             mock_parse_yaml.assert_called_once_with(test_yaml_path)
             mock_generate_html.assert_called_once()
             args, kwargs = mock_generate_html.call_args
-            self.assertEqual(args[0], {"pipeline": {"name": "P1"}})  # First arg is data
-            self.assertTrue(isinstance(args[1], str))  # Second arg is output_dir
+            self.assertEqual(args[0], {"pipeline": {"name": "P1"}})
+            self.assertTrue(
+                isinstance(args[1], str),  # Second arg is output_dir
+            )
         finally:
             # Cleanup: remove the temporary file
             os.remove(test_yaml_path)

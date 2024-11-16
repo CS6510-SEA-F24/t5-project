@@ -1,6 +1,5 @@
 import os
 import unittest
-from pathlib import Path
 from unittest.mock import patch, MagicMock
 from src.main.t5_grp.visualization.diagram_generator import (
     generate_html,
@@ -56,7 +55,7 @@ class TestDiagramGenerator(unittest.TestCase):
         output_path = os.path.join(output_dir, "output.html")
 
         # Act
-        generate_html(data,output_dir)
+        generate_html(data, output_dir)
 
         # Assert
         mock_exists.assert_called_once_with(output_dir)
@@ -139,15 +138,7 @@ class TestDiagramGenerator(unittest.TestCase):
         stage_artifacts = {}
         all_artifacts = set()
 
-        add_job_info(
-            pip_info,
-            job,
-            "job1",
-            "build",
-            stage_artifacts,
-            all_artifacts
-        )
-
+        add_job_info(pip_info, job, "job1", "build", stage_artifacts, all_artifacts)
         # Assert
         self.assertIn("job1", pip_info["jobs"])
         self.assertEqual(pip_info["jobs"]["job1"]["stage"], "build")
