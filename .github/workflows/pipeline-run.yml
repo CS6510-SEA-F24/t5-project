@@ -50,8 +50,7 @@ jobs:
           mkdir -p reports/tests
           mkdir -p htmlcov
           poetry run pytest
-        # poetry run pytest --cov=src/ --cov-report=term-missing --cov-report=html:htmlcov --cov-fail-under= 70
-        # will update
+          poetry run pytest --cov=src/ --cov-report=term-missing --cov-report=html:htmlcov --cov-fail-under=60
 
       - name: List generated files for debug
         run: |

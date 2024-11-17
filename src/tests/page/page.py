@@ -18,7 +18,13 @@ from tests.page.locators import PipelinePageLocators
 
 @dataclass
 class PipelineData:
-    """Complete pipeline data structure"""
+    """Complete pipeline data structure.
+
+    Attributes:
+        name: Pipeline identifier
+        stages: List of pipeline stages and their data
+        all_artifacts: List of all artifacts across stages
+    """
 
     name: str
     stages: List[StageData]
@@ -27,7 +33,12 @@ class PipelineData:
 
 @dataclass
 class VerificationResult:
-    """Result of pipeline verification"""
+    """Result of pipeline verification operations.
+
+    Attributes:
+        success: Boolean indicating verification success
+        message: Optional explanation of verification result
+    """
 
     success: bool
     message: Optional[str] = None
@@ -40,7 +51,9 @@ class PipelineError(Exception):
 
 
 class BasePage:
-    """Base class for all pages"""
+    """Base class for all page objects.
+    Provides common functionality
+    for page interaction and logging."""
 
     def __init__(self, driver: WebDriver):
         self.driver = driver
@@ -58,7 +71,19 @@ class PipelinePage(BasePage):
         self._pipeline_data = None
 
     def get_pipeline_data(self) -> Optional[PipelineData]:
-        """Get complete pipeline data"""
+        """Retrieve and construct complete pipeline data structure.
+
+        Attempts to gather all pipeline information including name,
+        stages, and artifacts. Uses caching to avoid redundant operations.
+
+        Returns:
+            PipelineData object containing complete pipeline information,
+            or None if data cannot be retrieved
+
+        Raises:
+            WebDriverException: If browser interaction fails
+            Exception: For unexpected errors during data gathering
+        """
         if not self._pipeline_data:
             try:
                 name = self.get_pipeline_name()
@@ -86,7 +111,12 @@ class PipelinePage(BasePage):
         return self._pipeline_data
 
     def get_pipeline_name(self) -> Optional[str]:
-        """Get pipeline name"""
+        """Get pipeline name from the page.
+
+        Returns:
+            str: Pipeline name if found
+            None: If pipeline name cannot be retrieved
+        """
         name = self.pipeline_element.get_title()
         if not name:
             self.logger.error("Failed to get pipeline name from element")
@@ -95,11 +125,22 @@ class PipelinePage(BasePage):
         return name
 
     def get_stages(self) -> List[str]:
-        """Get all stage names"""
+        """Retrieve list of all stage names in the pipeline.
+
+        Returns:
+            List of stage names in order of appearance
+        """
         return self.stages_element.get_stages()
 
     def get_stage_artifacts(self, stage_name: str) -> List[str]:
-        """Get artifacts for a specific stage"""
+        """Get artifacts for a specific stage.
+
+        Args:
+            stage_name: Name of the stage to retrieve artifacts from
+
+        Returns:
+            List of artifact paths associated with the stage
+        """
         try:
             locator = PipelinePageLocators.stage_artifacts(stage_name)
             if not locator:
@@ -118,7 +159,15 @@ class PipelinePage(BasePage):
             return []
 
     def get_job_dependencies(self, job_id: str) -> List[str]:
-        """Get dependencies for a specific job"""
+        """Get dependencies for a specific job.
+
+        Args:
+            job_id: ID of the job to check
+
+        Returns:
+            List of job IDs that this job depends on
+            Empty list if no dependencies or on error
+        """
         try:
             job_element = self.driver.find_element(By.ID, f"job_{job_id}")
             needs_str = job_element.get_attribute("data-needs")
@@ -128,7 +177,14 @@ class PipelinePage(BasePage):
             return []
 
     def is_job_allow_failure(self, job_id: str) -> bool:
-        """Check if job allows failure"""
+        """Check if job allows failure.
+
+        Args:
+            job_id: Identifier of the job to check
+
+        Returns:
+            True if job is configured to allow failure, False otherwise
+        """
         try:
             job_element = self.driver.find_element(By.ID, f"job_{job_id}")
             allow_failure = job_element.get_attribute("data-allow-failure")
@@ -140,7 +196,19 @@ class PipelinePage(BasePage):
             return False
 
     def verify_pipeline_structure(self) -> VerificationResult:
-        """Verify complete pipeline structure"""
+        """Verify the integrity and correctness of stage data.
+
+        Verification steps:
+        1. Validates stage name existence
+        2. Checks stage jobs and their attributes
+        3. Verifies stage artifacts match with job declarations
+
+        Args:
+            stage: StageData object containing stage information
+
+        Returns:
+            bool: True if stage data is valid, False otherwise
+        """
         pipeline_data = self.get_pipeline_data()
         if not pipeline_data:
             return VerificationResult(False, "Failed to get pipeline data")
@@ -159,7 +227,14 @@ class PipelinePage(BasePage):
             return VerificationResult(False, str(e))
 
     def _get_stages_data(self) -> List[StageData]:
-        """Get data for all stages"""
+        """Gather detailed data for all pipeline stages.
+
+        Collects comprehensive information about each stage including
+        associated jobs and artifacts.
+
+        Returns:
+            List of StageData objects containing stage details
+        """
         stages = []
         for stage_name in self.get_stages():
             jobs = self._get_stage_jobs(stage_name)
@@ -168,7 +243,19 @@ class PipelinePage(BasePage):
         return stages
 
     def _get_stage_jobs(self, stage_name: str) -> List[JobData]:
-        """Get all jobs in a stage"""
+        """Retrieve all jobs associated with a specific stage.
+
+        Args:
+            stage_name: Name of the stage to get jobs from
+
+        Returns:
+            List of JobData objects containing job details
+            Empty list if no jobs found or on error
+
+        Logs:
+            Error messages for failed operations
+            Info messages for successful retrieval
+        """
         try:
             jobs = []
             stage_jobs = self.jobs_element.get_stage_jobs(stage_name)
@@ -186,7 +273,23 @@ class PipelinePage(BasePage):
             return []
 
     def _verify_stage_data(self, stage: StageData) -> bool:
+        """Verify the integrity and correctness of stage data.
 
+        Performs comprehensive validation of stage data including:
+        1. Stage name validation
+        2. Job data verification
+        3. Stage-job relationship validation
+        4. Artifact declaration verification
+
+        Args:
+            stage: StageData object to verify
+
+        Returns:
+            bool: True if all validations pass, False otherwise
+
+        Logs:
+            Detailed error messages for each validation failure
+        """
         # 1. Verify stage name
         if not stage.name:
             self.logger.error("Stage name is missing")
@@ -227,7 +330,17 @@ class PipelinePage(BasePage):
         return True
 
     def _get_all_artifacts(self) -> List[str]:
-        """Get all artifacts from all stages"""
+        """Collect all artifacts from all pipeline stages.
+
+        Aggregates artifacts across all stages into a single list.
+
+        Returns:
+            List of artifact paths from all stages
+            Empty list if no artifacts found or on error
+
+        Logs:
+            Error messages if artifact collection fails
+        """
         all_artifacts = []
         try:
             for stage_name in self.get_stages():

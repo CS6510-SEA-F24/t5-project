@@ -2,16 +2,31 @@ import unittest
 import os
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.chrome.options import Options
+
 from tests.page.page import PipelinePage
 
 
 class PipelinePageTest(unittest.TestCase):
-    """Test class for pipeline visualization page"""
+    """Test class for pipeline visualization page.
+    Tests the functionality of pipeline structure, stages,
+    jobs, and their relationships."""
 
     def setUp(self):
-        """Set up test environment before each test"""
+        """Set up test environment before each test.
+        Initializes Chrome WebDriver in headless mode
+        and loads the pipeline HTML page."""
         try:
-            self.driver = webdriver.Chrome()
+            # Configure Chrome options for running in CI/GitHub Actions environment:
+            # --no-sandbox: Disable the sandbox for running in CI environment
+            # --headless: Run Chrome in headless mode (without GUI)
+            # --disable-dev-shm-usage: Overcome limited resource issues in CI containers
+            chrome_options = Options()
+            chrome_options.add_argument("--no-sandbox")
+            chrome_options.add_argument("--headless")
+            chrome_options.add_argument("--disable-dev-shm-usage")
+
+            self.driver = webdriver.Chrome(options=chrome_options)
             current_dir = os.path.dirname(os.path.abspath(__file__))
             html_path = os.path.join(current_dir, "..", "main", "output.html")
             file_url = f"file://{os.path.abspath(html_path)}"
@@ -60,7 +75,12 @@ class PipelinePageTest(unittest.TestCase):
                 )
 
     def test_job_dependencies(self) -> None:
-        """Test job dependencies"""
+        """Test job dependencies in the pipeline.
+        Verifies that:
+        1. Jobs without dependencies are correctly identified
+        2. Jobs with dependencies have correct dependency relationships
+        3. Dependency chains are properly maintained
+        """
         test_cases = {
             "compile": ["static_analysis"],
             "static_analysis": [],
@@ -128,4 +148,4 @@ class PipelinePageTest(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main(verbosity=1)
+    unittest.main()
