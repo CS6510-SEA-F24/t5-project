@@ -8,17 +8,15 @@ pipelines.
 """
 
 
-def generate_html(data: dict[str, Any], output_dir: str) -> None:
+def generate_html(data: dict[str, Any]) -> None:
     """
-    Generates an HTML file visualizing the CI/CD pipeline stages and jobs.
+    Generate HTML representation of the pipeline data.
 
     Args:
-        data (dict): The validated YAML data representing pipeline
-        stages and jobs.
+        data (dict[str, Any]): The pipeline data to be converted into HTML.
 
     Returns:
-        writes the generated HTML
-        output to a file.
+         None
     """
     # Extract pipeline data
     pipeline_data = extract_pipeline_data(data)
@@ -37,30 +35,30 @@ def generate_html(data: dict[str, Any], output_dir: str) -> None:
     # Rendering the template with the pipeline data
     html_output = template.render(pipeline=pipeline_data)
 
-    # Ensure the output directory exists
+    # Use a fixed output directory relative to the project root
+    output_dir = os.path.join(
+        os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+    )
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    # Defining the output path
+    # Write the HTML content to file
     output_path = os.path.join(output_dir, "output.html")
-
-    # Writing the rendered HTML to a file
     with open(output_path, "w") as file:
         file.write(html_output)
 
-    print(f"Generated output.html successfullyat: {output_path}")
+    print(f"Generated output.html successfully at: {output_path}")
 
 
 def extract_pipeline_data(data: dict[str, Any]) -> dict[str, Any]:
     """
-    Extracts and organizes pipeline data from the provided YAML data.
+    Extract relevant data from the provided pipeline configuration.
 
     Args:
-        data (dict): The validated YAML data containing pipeline information.
+        pipeline_config (dict): The pipeline configuration to extract data from.
 
     Returns:
-        dict: A dictionary containing organized pipeline information, including
-        stages, jobs, dependencies, and artifacts.
+        dict: Extracted relevant data from the configuration.
     """
     pipeline_info = {
         "name": data["pipeline"]["name"],
@@ -74,7 +72,7 @@ def extract_pipeline_data(data: dict[str, Any]) -> dict[str, Any]:
     stage_artifacts = {}
     all_artifacts = set()
     for stage_name in data["stages"]:
-        stage_info = {"name": stage_name, "artifacts": []}  # 初始化 artifacts 列表
+        stage_info = {"name": stage_name, "artifacts": []}
         pipeline_info["stages"].append(stage_info)
 
     for job in data.get("jobs", []):
@@ -104,12 +102,32 @@ def add_job_info(
     stage_artifacts: dict[str, set[str]],
     all_artifacts: set[str],
 ) -> None:
-    """Add job information to the pipeline data."""
-    reverse_deps_count = sum(
+    """
+    Add job information to the pipeline info structure.
+
+    Args:
+        pip_info (dict): The pipeline info where the job data will be stored.
+        job (dict): The job information.
+        job_name (str): The name of the job.
+        stage_name (str): The name of the stage to which this job belongs.
+        stage_artifacts (dict): The dictionary to record stage artifacts.
+        all_artifacts (set): The set to record all artifacts.
+
+    Returns:
+        None
+    """
+    being_depended_count = sum(
         1
         for other_job in pip_info["jobs"].values()
         if job_name in other_job.get("needs", [])
     )
+
+    depending_count = len(job.get("needs", []))
+
+    if depending_count == 0:
+        priority = 1 if being_depended_count > 0 else 0
+    else:
+        priority = 2 if being_depended_count > 0 else 3
 
     pip_info["jobs"][job_name] = {
         "stage": stage_name,
@@ -118,14 +136,18 @@ def add_job_info(
         "id": f"job_{job_name}",
         "position": len(pip_info["jobs"]),
         "artifacts": job.get("artifacts", {}).get("paths", []),
-        "dependency_count": len(job.get("needs", [])) + reverse_deps_count,
+        "dependency_count": priority,
     }
 
-    if not stage_name:
-        raise ValueError(f"Stage is required for job: {job_name}")
-
-    # Process dependencies
     for need in job.get("needs", []):
+        if need in pip_info["jobs"]:
+            dep_job = pip_info["jobs"][need]
+            dep_depending_count = len(dep_job.get("needs", []))
+            if dep_depending_count == 0:
+                dep_job["dependency_count"] = 1
+            else:
+                dep_job["dependency_count"] = 2
+
         pip_info["dependencies"].append(
             {
                 "from": f"job_{need}",
@@ -135,18 +157,15 @@ def add_job_info(
             }
         )
 
-    # Process and collect artifacts for each stage
     if "artifacts" in job:
         artifacts = job["artifacts"].get("paths", [])
-        for stage in pip_info["stages"]:
-            if stage["name"] == stage_name:
-                stage["artifacts"].extend(artifacts)
-                break
         if stage_name not in stage_artifacts:
             stage_artifacts[stage_name] = set()
         stage_artifacts[stage_name].update(artifacts)
         all_artifacts.update(artifacts)
 
-        if stage_name not in pip_info["artifacts"]:
-            pip_info["artifacts"][stage_name] = []
-        pip_info["artifacts"][stage_name].extend(artifacts)
+        # update stage artifacts
+        for stage in pip_info["stages"]:
+            if stage["name"] == stage_name:
+                stage["artifacts"].extend(artifacts)
+                break

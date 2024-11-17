@@ -4,13 +4,13 @@ from unittest.mock import patch
 from src.main.t5_grp.main import main
 
 """
-Unit tests for the `main` function in the t5_grp.main module.
+Unit tests for the main module.
+
 This module contains tests to verify that the main function handles YAML
-parsing and HTML generation correctly by mocking the
-`yaml_parser.parse_yaml` and `diagram_generator.generate_html` functions.
+parsing and HTML generation correctly.
+
 Classes:
-    TestMainFunction:
-        Tests for the main function.
+    TestMainFunction: Tests for the main function.
 """
 
 
@@ -41,14 +41,6 @@ class TestMainFunction(unittest.TestCase):
             # Verify pipeline data
             self.assertEqual(args[0], {"pipeline": {"name": "P1"}})
 
-            # Verify output directory path
-            expected_output_dir = os.path.join(
-                os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
-                "src",
-                "main",
-                "main",
-            )
-            self.assertEqual(args[1], expected_output_dir)
         finally:
             # Cleanup
             os.remove(test_yaml_path)

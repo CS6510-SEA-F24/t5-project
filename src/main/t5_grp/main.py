@@ -1,5 +1,3 @@
-import os
-
 from .visualization import diagram_generator
 import argparse
 from .parser import yaml_parser
@@ -35,11 +33,8 @@ def main(yaml_file_path):
             print("Failed to parse YAML file or validation error occurred.")
             return
 
-        # Use a fixed output directory relative to the project root
-        output_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "main")
-
-        # Generate the HTML visualization from the parsed data
-        diagram_generator.generate_html(data, output_dir)
+        # Generate the HTML visualization
+        diagram_generator.generate_html(data)
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
