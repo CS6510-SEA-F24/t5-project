@@ -17,20 +17,22 @@
         {% for stage in pipeline.stages %}
             <div class="stage-wrapper">
                 <div class="stage">
-                    <div class="stage-title">{{ stage }}</div>
+                    <div class="stage-title">{{ stage.name }}</div>
                     <!-- Loop through each job and check its stage -->
                     {% set stage_jobs = [] %}
                     {% for job_name, job in pipeline.jobs.items() %}
-                        {% if job.stage == stage %}
+                        {% if job.stage == stage.name %}
                             {% set _ = stage_jobs.append((job_name, job)) %}
                         {% endif %}
                     {% endfor %}
 
                     <!-- Sort jobs based on dependency count and position -->
-                    {% set sorted_jobs = stage_jobs|sort(attribute='1.dependency_count', reverse=true) %}
+                    {% set sorted_jobs = stage_jobs|sort(attribute='1.dependency_count,1.position',reverse=true) %}
                     {% for job_name, job in sorted_jobs %}
                         <div class="job"
                              id="job_{{ job_name }}"
+                             data-job-name="{{ job_name }}"
+                             data-stage="{{ job.stage }}"
                              data-needs="{{ job.needs|join(',') if job.needs else '' }}"
                              data-allow-failure="{{ job.allow_failure|default(false)|string|lower }}"
                              style="order: {{ loop.index }}">  <!-- Add order style -->
@@ -39,12 +41,12 @@
                     {% endfor %}
                 </div>
                 <!-- Check if stage has artifacts -->
-                {% if stage in pipeline.artifacts %}
+                {% if stage.name in pipeline.artifacts and pipeline.artifacts[stage.name] %}
                     <div class="stage-artifacts">
                         <div class="artifacts-box">
-                            <div class="artifacts-title">{{ stage }} Artifacts</div>
+                            <div class="artifacts-title">{{stage.name}} Artifacts</div>
                             <ul class="artifacts-list">
-                                {% for artifact in pipeline.artifacts[stage] %}
+                                {% for artifact in pipeline.artifacts[stage.name] %}
                                     <li>{{ artifact }}</li>
                                 {% endfor %}
                             </ul>

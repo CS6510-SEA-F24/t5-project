@@ -1,121 +1,131 @@
-import os
-import time
 import unittest
-
+import os
 from selenium import webdriver
-from selenium.common.exceptions import NoSuchWindowException
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.chrome.options import Options
-from t5_grp.main import main
-from page import MainPage, OutputPage
-from selenium.webdriver.support.ui import WebDriverWait
+from selenium.common.exceptions import WebDriverException
+from tests.page.page import PipelinePage
 
 
-class PythonOrgSearch(unittest.TestCase):
-    """Test class for verifying the local output HTML page."""
+class PipelinePageTest(unittest.TestCase):
+    """Test class for pipeline visualization page"""
 
     def setUp(self):
-        """
-        Set up test environment before executing tests.
+        """Set up test environment before each test"""
+        try:
+            self.driver = webdriver.Chrome()
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            html_path = os.path.join(current_dir, "..", "main", "output.html")
+            file_url = f"file://{os.path.abspath(html_path)}"
 
-        Steps:
-        1. Generate the output.html using the main function.
-        2. Set up Selenium WebDriver with required options.
-        3. Load the generated output.html to test.
-        """
-        # Step 1: Generate the output.html first
-        test_yaml_path = os.path.join(
-            os.path.dirname(__file__), "test_files", "valid.yaml"
-        )
-        main(test_yaml_path)
+            self.driver.get(file_url)
+            self.pipeline_page = PipelinePage(self.driver)
+        except WebDriverException as e:
+            self.fail(f"Failed to setup test environment: {str(e)}")
 
-        # Step 2: Set up Selenium WebDriver
-        options = Options()
-        if os.environ.get("GITHUB_ACTIONS"):
-            options.add_argument("--headless")
-        options.add_argument("--disable-gpu")
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-dev-shm-usage")
-        driver_path = self.get_chromedriver_path()
-
-        if not os.path.isfile(driver_path):
-            raise ValueError(f"The path is not a valid file: {driver_path}")
-
-        if not os.access(driver_path, os.X_OK):
-            raise PermissionError(
-                f"The path is not an executable file: " f"{driver_path}"
-            )
-        service = Service(driver_path)
-        self.driver = webdriver.Chrome(service=service, options=options)
-        # Step 3: Find and load the generated output.html
-        if os.environ.get("GITHUB_WORKSPACE"):
-            workspace = os.environ.get("GITHUB_WORKSPACE")
-            base_dir = os.path.join(workspace, "src", "main")
-        else:
-            base_dir = os.path.join(
-                os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
-                "src",
-                "main",
-            )
-
-        local_file_path = os.path.join(base_dir, "output.html")
-
-        if not os.path.exists(local_file_path):
-            raise FileNotFoundError(
-                f"The specified HTML file does not exist: {local_file_path}\n"
-                f"Current directory: {os.getcwd()}\n"
-                f"Directory contents: "
-                f"{os.listdir(os.path.dirname(local_file_path))}"
-            )
-
-        self.driver.set_page_load_timeout(360)
-        self.driver.get("file://" + local_file_path)
-
-    def get_chromedriver_path(self):
-        """
-        Get the path to the ChromeDriver based on the environment.
-
-        Returns:
-            str: The path to the ChromeDriver executable.
-        """
-        if os.environ.get("GITHUB_ACTIONS"):
-            default_path = "/usr/local/bin/chromedriver"
-            return os.environ.get("CHROMEDRIVER_PATH", default_path)
-        elif os.name == "nt":
-            return "path/to/windows/chromedriver"
-        else:
-            return "/opt/homebrew/bin/chromedriver"
-
-    def test_search_in_local_output_html(self):
-        """
-        Verify the content of the local output HTML page.
-
-        Checks:
-        1. The title of the main page matches the expected value.
-        2. The pipeline title is present on the main page.
-        3. The pipeline is displayed on the output page.
-        """
-        main_page = MainPage(self.driver)
-        wait = WebDriverWait(self.driver, 10)
-        wait.until(lambda driver: driver.title)
-        self.assertTrue(main_page.is_title_matches(), "Page title doesn't match.")
-        pipeline_title = main_page.get_pipeline_title()
-        self.assertTrue(pipeline_title, "Pipeline title is empty.")
-        search_results_page = OutputPage(self.driver)
+    def test_pipeline_structure(self):
+        """Test if pipeline structure is valid"""
+        result = self.pipeline_page.verify_pipeline_structure()
         self.assertTrue(
-            search_results_page.is_pipeline_displayed(), "Pipeline is not displayed."
+            result.success, f"Pipeline structure verification failed: {result.message}"
         )
-        time.sleep(10)
+
+    def test_pipeline_name(self):
+        """Test if pipeline name is correct"""
+        name = self.pipeline_page.get_pipeline_name()
+        self.assertIsNotNone(name, "Pipeline name should not be None")
+        self.assertEqual(name, "P1", "Pipeline name should be 'P1'")
+
+    def test_pipeline_stages(self):
+        """Test if pipeline stages are correct"""
+        expected_stages = ["build", "test", "doc", "deploy"]
+        stages = self.pipeline_page.get_stages()
+        self.assertEqual(
+            stages,
+            expected_stages,
+            f"Expected stages {expected_stages}, but got {stages}",
+        )
+
+    def test_stage_artifacts(self):
+        """Test stage artifacts"""
+        test_cases = {
+            "build": ["build/classes/*", "build/reports/*"],
+            "test": ["final.jar"],
+            "deploy": ["distribution.tgz", "md5.sum"],
+        }
+
+        for stage, expected in test_cases.items():
+            with self.subTest(stage=stage):
+                artifacts = self.pipeline_page.get_stage_artifacts(stage)
+                self.assertEqual(
+                    artifacts, expected, f"Stage {stage} artifacts mismatch"
+                )
+
+    def test_job_dependencies(self) -> None:
+        """Test job dependencies"""
+        test_cases = {
+            "compile": ["static_analysis"],
+            "static_analysis": [],
+            "unit_test": ["compile"],
+            "generate_docs": ["unit_test"],
+            "publish": ["generate_docs"],
+        }
+
+        no_deps_jobs = [job for job, deps in test_cases.items() if not deps]
+        for job in no_deps_jobs:
+            with self.subTest(job=job):
+                deps = self.pipeline_page.get_job_dependencies(job)
+                self.assertEqual(deps, [], f"Job {job} should have no dependencies")
+
+        has_deps_jobs = [job for job, deps in test_cases.items() if deps]
+        for job in has_deps_jobs:
+            with self.subTest(job=job):
+                deps = self.pipeline_page.get_job_dependencies(job)
+                self.assertEqual(
+                    sorted(deps),
+                    sorted(test_cases[job]),
+                    f"Job {job} dependencies mismatch: "
+                    f"expected {test_cases[job]}, got {deps}",
+                )
+
+    def test_job_properties(self):
+        """Test allow_failure property"""
+        self.assertTrue(
+            self.pipeline_page.is_job_allow_failure("static_analysis"),
+            "static_analysis should allow failure",
+        )
+        self.assertFalse(
+            self.pipeline_page.is_job_allow_failure("compile"),
+            "compile should not allow failure",
+        )
+
+    def test_complete_pipeline_data(self):
+        """Test complete pipeline data structure"""
+        pipeline_data = self.pipeline_page.get_pipeline_data()
+        self.assertIsNotNone(pipeline_data, "Pipeline data should not be None")
+
+        # Verify basic structure
+        self.assertEqual(pipeline_data.name, "P1")
+        self.assertEqual(len(pipeline_data.stages), 4)
+
+        # Verify all artifacts
+        expected_artifacts = [
+            "build/classes/*",
+            "build/reports/*",
+            "distribution.tgz",
+            "final.jar",
+            "md5.sum",
+        ]
+        self.assertEqual(
+            sorted(pipeline_data.all_artifacts), sorted(expected_artifacts)
+        )
 
     def tearDown(self):
-        """
-        Clean up after tests; close the browser.
-        """
-        try:
-            self.driver.close()
-        except NoSuchWindowException:
-            pass
+        """Clean up after each test"""
+        if hasattr(self, "driver"):
+            try:
+                self.driver.quit()
+            except WebDriverException:
+                pass
 
 
 if __name__ == "__main__":
-    unittest.main()
+    unittest.main(verbosity=1)

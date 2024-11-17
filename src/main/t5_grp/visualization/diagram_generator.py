@@ -64,7 +64,7 @@ def extract_pipeline_data(data: dict[str, Any]) -> dict[str, Any]:
     """
     pipeline_info = {
         "name": data["pipeline"]["name"],
-        "stages": data["stages"],
+        "stages": [],
         "jobs": {},
         "dependencies": [],
         "artifacts": {},
@@ -73,6 +73,9 @@ def extract_pipeline_data(data: dict[str, Any]) -> dict[str, Any]:
 
     stage_artifacts = {}
     all_artifacts = set()
+    for stage_name in data["stages"]:
+        stage_info = {"name": stage_name, "artifacts": []}  # 初始化 artifacts 列表
+        pipeline_info["stages"].append(stage_info)
 
     for job in data.get("jobs", []):
         job_name = job.get("name")
@@ -102,6 +105,12 @@ def add_job_info(
     all_artifacts: set[str],
 ) -> None:
     """Add job information to the pipeline data."""
+    reverse_deps_count = sum(
+        1
+        for other_job in pip_info["jobs"].values()
+        if job_name in other_job.get("needs", [])
+    )
+
     pip_info["jobs"][job_name] = {
         "stage": stage_name,
         "needs": job.get("needs", []),
@@ -109,7 +118,7 @@ def add_job_info(
         "id": f"job_{job_name}",
         "position": len(pip_info["jobs"]),
         "artifacts": job.get("artifacts", {}).get("paths", []),
-        "dependency_count": len(job.get("needs", [])),
+        "dependency_count": len(job.get("needs", [])) + reverse_deps_count,
     }
 
     if not stage_name:
@@ -129,7 +138,15 @@ def add_job_info(
     # Process and collect artifacts for each stage
     if "artifacts" in job:
         artifacts = job["artifacts"].get("paths", [])
+        for stage in pip_info["stages"]:
+            if stage["name"] == stage_name:
+                stage["artifacts"].extend(artifacts)
+                break
         if stage_name not in stage_artifacts:
             stage_artifacts[stage_name] = set()
         stage_artifacts[stage_name].update(artifacts)
         all_artifacts.update(artifacts)
+
+        if stage_name not in pip_info["artifacts"]:
+            pip_info["artifacts"][stage_name] = []
+        pip_info["artifacts"][stage_name].extend(artifacts)

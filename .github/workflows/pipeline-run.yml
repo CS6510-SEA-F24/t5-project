@@ -1,17 +1,22 @@
 name: Pipeline Run
+
 on:
+  # Trigger on various pull request events
   pull_request:
     types:
-      - opened
-      - ready_for_review
-      - synchronize
-      - closed
+      - opened # Trigger on new pull request
+      - ready_for_review # Trigger when PR is ready for review
+      - synchronize    # Trigger when new commits are pushed to the PR
+      - closed  # Trigger when a PR is merged (closed with merged status)
   push:
     branches:
       - main
+
+# Define the jobs to be run in the workflow
 jobs:
   build:
-    if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
+    # Run the job if the PR is opened, or when pushed to main branch
+    if: github.event_name == 'pull_request'||(github.event_name == 'push' && github.ref == 'refs/heads/main')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -34,37 +39,23 @@ jobs:
         run: |
           poetry install
 
-      - name: Set up Chrome
-        id: setup-chrome
-        uses: browser-actions/setup-chrome@v1
-        with:
-            chrome-version: 131
-            install-chromedriver: true
-            install-dependencies: true
-
-      - name: Verify ChromeDriver Installation
+      - name: Verify pytest is installed
         run: |
-            echo "ChromeDriver installed at ${{ steps.setup-chrome.outputs.chromedriver-path }}"
-            ${{ steps.setup-chrome.outputs.chromedriver-path }} --version
-
-      - name: Get Chrome Path
-        run: |
-          echo "Google Chrome installed at ${{ steps.setup-chrome.outputs.chrome-path }}"
-          ${{ steps.setup-chrome.outputs.chrome-path }} --version
+          poetry run pytest --version
 
       - name: Run Tests and Coverage
         env:
-            PYTHONPATH: ${{ github.workspace }}/src
-            CHROMEDRIVER_PATH: ${{ steps.setup-chrome.outputs.chromedriver-path }}
-            GITHUB_WORKSPACE: ${{ github.workspace }}
-            LOCAL_HTML_PATH: ${{ github.workspace }}/src/main/output.html
+          PYTHONPATH: ${{ github.workspace }}/src
         run: |
           mkdir -p reports/tests
           mkdir -p htmlcov
-          mkdir -p ${{ github.workspace }}/src/main
-          poetry run pytest src/tests/parser/test_yaml_parser.py src/tests/test_main.py
-          poetry run pytest src/tests/test_page.py
-          poetry run pytest --ignore=src/tests/parser/test_yaml_parser.py --ignore=src/tests/test_main.py --ignore=src/tests/test_page.py
+          poetry run pytest
+        # poetry run pytest --cov=src/ --cov-report=term-missing --cov-report=html:htmlcov --cov-fail-under= 70
+        # will update
+
+      - name: List generated files for debug
+        run: |
+          ls -R reports
 
       - name: Upload test results
         if: always()

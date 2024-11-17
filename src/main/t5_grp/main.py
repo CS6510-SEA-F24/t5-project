@@ -27,23 +27,16 @@ def main(yaml_file_path):
     Args:
         yaml_file_path (str):
             Path to the YAML file containing the CI/CD configuration.
-
-    Uses this function to parse and validate the YAML file.
-    If valid, it passes the data to the diagram_generator module
-    to create the HTML visualization.
     """
-
     try:
         # Parse the YAML file and validate its content
         data = yaml_parser.parse_yaml(yaml_file_path)
         if data is None:
             print("Failed to parse YAML file or validation error occurred.")
             return
-        # Determine output directory
-        if os.environ.get("GITHUB_WORKSPACE"):
-            output_dir = os.path.join(os.environ.get("GITHUB_WORKSPACE"), "src", "main")
-        else:
-            output_dir = os.path.dirname(os.path.dirname(__file__))
+
+        # Use a fixed output directory relative to the project root
+        output_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "main")
 
         # Generate the HTML visualization from the parsed data
         diagram_generator.generate_html(data, output_dir)

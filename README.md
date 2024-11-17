@@ -66,7 +66,7 @@ poetry run pytest
 
 To run tests with coverage reports:
 ```bash
-poetry run pytest --cov=src/ --cov-report=term-missing --cov-fail-under = 60
+poetry run pytest --cov=src/ --cov-report=term-missing --cov-fail-under=60
 ```
 
 Lint Code (Flake8): Check code style against PEP8 guidelines:

@@ -31,15 +31,26 @@ class TestMainFunction(unittest.TestCase):
             # Call the main function with the path to the mock YAML file
             main(test_yaml_path)
 
+            # Verify parse_yaml was called
             mock_parse_yaml.assert_called_once_with(test_yaml_path)
+
+            # Verify generate_html was called with correct arguments
             mock_generate_html.assert_called_once()
             args, kwargs = mock_generate_html.call_args
+
+            # Verify pipeline data
             self.assertEqual(args[0], {"pipeline": {"name": "P1"}})
-            self.assertTrue(
-                isinstance(args[1], str),  # Second arg is output_dir
+
+            # Verify output directory path
+            expected_output_dir = os.path.join(
+                os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
+                "src",
+                "main",
+                "main",
             )
+            self.assertEqual(args[1], expected_output_dir)
         finally:
-            # Cleanup: remove the temporary file
+            # Cleanup
             os.remove(test_yaml_path)
 
 

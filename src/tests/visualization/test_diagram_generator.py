@@ -127,7 +127,13 @@ class TestDiagramGenerator(unittest.TestCase):
         - No dependencies are added if there are none.
         """
         # Arrange
-        pip_info = {"jobs": {}, "dependencies": []}
+        pip_info = {
+            "jobs": {},
+            "dependencies": [],
+            "stages": [{"name": "build", "artifacts": []}],
+            "artifacts": {},
+            "all_artifacts": [],
+        }
         job = {
             "name": "job1",
             "stage": "build",
@@ -143,6 +149,8 @@ class TestDiagramGenerator(unittest.TestCase):
         self.assertIn("job1", pip_info["jobs"])
         self.assertEqual(pip_info["jobs"]["job1"]["stage"], "build")
         self.assertEqual(pip_info["dependencies"], [])
+        self.assertEqual(pip_info["jobs"]["job1"]["dependency_count"], 0)
+        self.assertEqual(pip_info["jobs"]["job1"]["position"], 0)
 
 
 if __name__ == "__main__":
