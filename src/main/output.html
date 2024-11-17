@@ -41,6 +41,8 @@
                     
                         <div class="job"
                              id="job_compile"
+                             data-job-name="compile"
+                             data-stage="build"
                              data-needs="static_analysis"
                              data-allow-failure="false"
                              style="order: 1">  <!-- Add order style -->
@@ -49,6 +51,8 @@
                     
                         <div class="job"
                              id="job_static_analysis"
+                             data-job-name="static_analysis"
+                             data-stage="build"
                              data-needs=""
                              data-allow-failure="true"
                              style="order: 2">  <!-- Add order style -->
@@ -97,6 +101,8 @@
                     
                         <div class="job"
                              id="job_unit_test"
+                             data-job-name="unit_test"
+                             data-stage="test"
                              data-needs="compile"
                              data-allow-failure="false"
                              style="order: 1">  <!-- Add order style -->
@@ -143,6 +149,8 @@
                     
                         <div class="job"
                              id="job_generate_docs"
+                             data-job-name="generate_docs"
+                             data-stage="doc"
                              data-needs="unit_test"
                              data-allow-failure="true"
                              style="order: 1">  <!-- Add order style -->
@@ -178,6 +186,8 @@
                     
                         <div class="job"
                              id="job_publish"
+                             data-job-name="publish"
+                             data-stage="deploy"
                              data-needs="generate_docs"
                              data-allow-failure="false"
                              style="order: 1">  <!-- Add order style -->
