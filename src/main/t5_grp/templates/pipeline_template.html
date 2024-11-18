@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ pipeline.name }}</title>
-    <link rel="stylesheet" href="t5_grp/assets/main.css">
-    <link rel="icon" href="t5_grp/assets/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="{{ asset_path }}/main.css">
+    <link rel="icon" href="{{ asset_path }}/favicon.ico" type="image/x-icon">
 </head>
 <body>
 <!-- Dynamic title for the pipeline -->
@@ -83,6 +83,6 @@
         </svg>
     </div>
 </div>
-<script src="t5_grp/assets/main.js"></script>
+<script src="{{ asset_path }}/main.js"></script>
 </body>
 </html>

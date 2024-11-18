@@ -1,14 +1,50 @@
+import os
+import tempfile
 import unittest
 
 from src.main.t5_grp.visualization.diagram_generator import (
     add_job_info,
+    generate_html,
+    extract_pipeline_data,
 )
+from t5_grp.config import PROJECT_ROOT, ASSETS_FOLDER, ASSET_FILES, TEST_OUTPUT_FILENAME
 
 
 class TestDiagramGenerator(unittest.TestCase):
     """
     Test suite for the diagram_generator module.
     """
+
+    def test_generate_html(self):
+        """Test the generate_html function"""
+        # Create a temporary directory for test output
+        with tempfile.TemporaryDirectory() as temp_dir:
+            output_path = os.path.join(temp_dir, TEST_OUTPUT_FILENAME)
+            test_data = {
+                "pipeline": {
+                    "name": "Test Pipeline",
+                    "stages": ["build", "test"],
+                    "jobs": {
+                        "job1": {"stage": "build"},
+                        "job2": {"stage": "test", "needs": ["job1"]},
+                    },
+                }
+            }
+
+            # Call generate_html
+            generate_html(test_data, output_path)
+
+            # Verify output file exists
+            self.assertTrue(os.path.exists(output_path))
+
+            # Verify assets were copied
+            assets_dir = os.path.join(temp_dir, PROJECT_ROOT, ASSETS_FOLDER)
+            self.assertTrue(os.path.exists(assets_dir))
+            for asset in ASSET_FILES:
+                self.assertTrue(
+                    os.path.exists(os.path.join(assets_dir, asset)),
+                    f"Asset {asset} should exist",
+                )
 
     def setUp(self):
         """Initialize variables that need to be reused in multiple test cases"""
@@ -151,6 +187,28 @@ class TestDiagramGenerator(unittest.TestCase):
             {"test.txt", "report.pdf"}.issubset(self.all_artifacts),
             "All artifacts should be correctly recorded",
         )
+
+    def test_extract_pipeline_data(self):
+        test_data = {
+            "pipeline": {"name": "Test Pipeline"},
+            "stages": ["build", "test"],
+            "jobs": [
+                {
+                    "name": "build_job",
+                    "stage": "build",
+                    "artifacts": {"paths": ["build.txt"]},
+                },
+                {"name": "test_job", "stage": "test", "needs": ["build_job"]},
+            ],
+        }
+
+        result = extract_pipeline_data(test_data)
+
+        self.assertEqual(result["name"], "Test Pipeline")
+        self.assertEqual(len(result["stages"]), 2)
+        self.assertEqual(len(result["jobs"]), 2)
+        self.assertIn("build_job", result["jobs"])
+        self.assertIn("test_job", result["jobs"])
 
 
 if __name__ == "__main__":

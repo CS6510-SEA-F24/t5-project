@@ -24,22 +24,21 @@ class TestMainFunction(unittest.TestCase):
 
         # Create a temporary YAML file for testing
         test_yaml_path = "test.yaml"
+        test_output_path = "output.html"
         with open(test_yaml_path, "w") as f:
             f.write("pipeline:\n  name: P1")
 
         try:
-            # Call the main function with the path to the mock YAML file
-            main(test_yaml_path)
+            # Call the main function with both paths
+            main(test_yaml_path, output_path=test_output_path)
 
             # Verify parse_yaml was called
             mock_parse_yaml.assert_called_once_with(test_yaml_path)
 
             # Verify generate_html was called with correct arguments
-            mock_generate_html.assert_called_once()
-            args, kwargs = mock_generate_html.call_args
-
-            # Verify pipeline data
-            self.assertEqual(args[0], {"pipeline": {"name": "P1"}})
+            mock_generate_html.assert_called_once_with(
+                {"pipeline": {"name": "P1"}}, output_path=test_output_path
+            )
 
         finally:
             # Cleanup

@@ -1,11 +1,25 @@
+import shutil
+import tempfile
 import unittest
 import os
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.chrome.options import Options
 
+from t5_grp.parser.yaml_parser import parse_yaml
+from t5_grp.visualization.diagram_generator import generate_html
 from tests.page.page import PipelinePage
 
+from src.main.t5_grp.config import (
+    TEST_PIPELINE_NAME,
+    PROJECT_ROOT,
+    ASSETS_FOLDER,
+    ASSET_FILES,
+    TEST_FILES_DIR,
+    TEST_YAML_FILE,
+    MAIN_FOLDER,
+    TEMP_HTML_FILE
+)
 
 class PipelinePageTest(unittest.TestCase):
     """Test class for pipeline visualization page.
@@ -17,6 +31,35 @@ class PipelinePageTest(unittest.TestCase):
         Initializes Chrome WebDriver in headless mode
         and loads the pipeline HTML page."""
         try:
+            # Create temporary directory for test files
+            self.temp_dir = tempfile.mkdtemp()
+
+            # Parse test YAML file
+            test_yaml_path = os.path.join(
+                os.path.dirname(__file__),
+                TEST_FILES_DIR,
+                TEST_YAML_FILE
+            )
+            pipeline_data = parse_yaml(test_yaml_path)
+
+            # Generate temporary HTML file
+            self.temp_html = os.path.join(self.temp_dir, TEMP_HTML_FILE)
+            generate_html(pipeline_data, output_path=self.temp_html)
+            # Copy necessary resources (CSS and favicon) to temporary directory
+            assets_src_dir = os.path.join(
+                os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
+                MAIN_FOLDER,
+                PROJECT_ROOT,
+                ASSETS_FOLDER
+            )
+            assets_dst_dir = os.path.join(self.temp_dir, PROJECT_ROOT, ASSETS_FOLDER)
+            os.makedirs(assets_dst_dir, exist_ok=True)
+            for asset in ASSET_FILES:
+                src = os.path.join(assets_src_dir, asset)
+                dst = os.path.join(assets_dst_dir, asset)
+                if os.path.exists(src):
+                    shutil.copy2(src, dst)
+
             # Configure Chrome options for running in CI/GitHub Actions environment:
             # --no-sandbox: Disable the sandbox for running in CI environment
             # --headless: Run Chrome in headless mode (without GUI)
@@ -27,10 +70,7 @@ class PipelinePageTest(unittest.TestCase):
             chrome_options.add_argument("--disable-dev-shm-usage")
 
             self.driver = webdriver.Chrome(options=chrome_options)
-            current_dir = os.path.dirname(os.path.abspath(__file__))
-            html_path = os.path.join(current_dir, "..", "main", "output.html")
-            file_url = f"file://{os.path.abspath(html_path)}"
-
+            file_url = f"file://{os.path.abspath(self.temp_html)}"
             self.driver.get(file_url)
             self.pipeline_page = PipelinePage(self.driver)
         except WebDriverException as e:
@@ -47,7 +87,9 @@ class PipelinePageTest(unittest.TestCase):
         """Test if pipeline name is correct"""
         name = self.pipeline_page.get_pipeline_name()
         self.assertIsNotNone(name, "Pipeline name should not be None")
-        self.assertEqual(name, "P1", "Pipeline name should be 'P1'")
+        self.assertEqual(
+            name, TEST_PIPELINE_NAME, f"Pipeline name should be '{TEST_PIPELINE_NAME}'"
+        )
 
     def test_pipeline_stages(self):
         """Test if pipeline stages are correct"""
@@ -123,7 +165,7 @@ class PipelinePageTest(unittest.TestCase):
         self.assertIsNotNone(pipeline_data, "Pipeline data should not be None")
 
         # Verify basic structure
-        self.assertEqual(pipeline_data.name, "P1")
+        self.assertEqual(pipeline_data.name, TEST_PIPELINE_NAME)
         self.assertEqual(len(pipeline_data.stages), 4)
 
         # Verify all artifacts
@@ -140,11 +182,26 @@ class PipelinePageTest(unittest.TestCase):
 
     def tearDown(self):
         """Clean up after each test"""
-        if hasattr(self, "driver"):
-            try:
+        try:
+            if hasattr(self, "driver"):
                 self.driver.quit()
-            except WebDriverException:
-                pass
+        except Exception as e:
+            print(f"Warning: Failed to quit WebDriver: {str(e)}")
+        finally:
+            try:
+                # Clean up temporary directory and all its contents
+                if hasattr(self, "temp_dir") and os.path.exists(self.temp_dir):
+                    shutil.rmtree(self.temp_dir)
+
+                # Clean up t5_grp directory in project root
+                project_root = os.path.dirname(
+                    os.path.dirname(os.path.dirname(__file__))
+                )
+                t5_grp_dir = os.path.join(project_root, PROJECT_ROOT)
+                if os.path.exists(t5_grp_dir):
+                    shutil.rmtree(t5_grp_dir)
+            except Exception as e:
+                print(f"Warning: Cleanup failed: {str(e)}")
 
 
 if __name__ == "__main__":

@@ -18,13 +18,13 @@ Usage:
 """
 
 
-def main(yaml_file_path):
+def main(yaml_file_path, output_path="output.html"):
     """
     Parses the given YAML file and generates an HTML visualization.
 
     Args:
-        yaml_file_path (str):
-            Path to the YAML file containing the CI/CD configuration.
+        yaml_file_path (str): Path to the YAML file containing the CI/CD configuration.
+        output_path (str): Path where the HTML visualization will be generated.
     """
     try:
         # Parse the YAML file and validate its content
@@ -33,29 +33,26 @@ def main(yaml_file_path):
             print("Failed to parse YAML file or validation error occurred.")
             return
 
-        # Generate the HTML visualization
-        diagram_generator.generate_html(data)
+        # Generate the HTML visualization with output path
+        diagram_generator.generate_html(data, output_path=output_path)
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
 
 def cli():
-    """
-    Sets up the command-line interface for the script.
-
-    Defines the command-line arguments and passes them to the main
-    function.
-    It expects one argument: the path to the CI/CD configuration YAML file.
-    """
-
-    # Create the parser with a description
+    """Sets up the command-line interface for the script."""
     parser = argparse.ArgumentParser(
         description="Generate CI/CD pipeline visualization from YAML file."
     )
     parser.add_argument("yaml_file", help="Path to CI/CD config YAML file.")
-    # Parse the arguments and call the main function with the YAML file path
+    parser.add_argument(
+        "-o",
+        "--output",
+        default="output.html",
+        help="Path for the generated HTML visualization (default: output.html)",
+    )
     args = parser.parse_args()
-    main(args.yaml_file)
+    main(args.yaml_file, output_path=args.output)
 
 
 if __name__ == "__main__":

@@ -1,6 +1,17 @@
+import shutil
+
 from jinja2 import Environment, FileSystemLoader
 from typing import Any
 import os
+from ..config import (
+    ASSET_FILES,
+    ASSET_DIR_NAME,
+    TEMPLATE_DIR_NAME,
+    TEMPLATE_FILE,
+    PROJECT_ROOT,
+    ASSETS_FOLDER,
+    SUCCESS_MESSAGE,
+)
 
 """
 This module provides functionality to generate visual diagrams for CI/CD
@@ -8,46 +19,57 @@ pipelines.
 """
 
 
-def generate_html(data: dict[str, Any]) -> None:
-    """
-    Generate HTML representation of the pipeline data.
+def generate_html(data: dict[str, Any], output_path: str) -> None:
+    """Generate HTML visualization of pipeline
 
     Args:
-        data (dict[str, Any]): The pipeline data to be converted into HTML.
+        data: Pipeline configuration data
+        output_path: Path where HTML file should be generated
 
-    Returns:
-         None
+    Raises:
+        ValueError: If output_path is not provided
     """
+    if not output_path:
+        raise ValueError("output_path must be provided")
     # Extract pipeline data
     pipeline_data = extract_pipeline_data(data)
 
     # Setting up the Jinja2 environment
     env = Environment(
         loader=FileSystemLoader(
-            os.path.join(os.path.dirname(__file__), "..", "templates")
+            os.path.join(os.path.dirname(__file__), "..", TEMPLATE_DIR_NAME)
         ),
         autoescape=True,
     )
 
     # Loading the template
-    template = env.get_template("pipeline_template.html")
+    template = env.get_template(TEMPLATE_FILE)
 
     # Rendering the template with the pipeline data
-    html_output = template.render(pipeline=pipeline_data)
+    html_output = template.render(pipeline=pipeline_data, asset_path=ASSET_DIR_NAME)
 
-    # Use a fixed output directory relative to the project root
-    output_dir = os.path.join(
-        os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-    )
-    if not os.path.exists(output_dir):
+    # Ensure the directory for output_path exists
+    output_dir = os.path.dirname(output_path)
+    if output_dir and not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    # Write the HTML content to file
-    output_path = os.path.join(output_dir, "output.html")
-    with open(output_path, "w") as file:
+    # Create assets directory and copy resources
+    assets_src_dir = os.path.join(os.path.dirname(__file__), "..", ASSETS_FOLDER)
+    assets_dst_dir = os.path.join(output_dir, PROJECT_ROOT, ASSETS_FOLDER)
+    os.makedirs(assets_dst_dir, exist_ok=True)
+
+    # Copy CSS and JS files
+    for asset in ASSET_FILES:
+        src = os.path.join(assets_src_dir, asset)
+        dst = os.path.join(assets_dst_dir, asset)
+        if os.path.exists(src):
+            shutil.copy2(src, dst)
+
+    # Write the HTML content to the specified output path
+    with open(output_path, "w", encoding="utf-8") as file:
         file.write(html_output)
 
-    print(f"Generated output.html successfully at: {output_path}")
+    print(SUCCESS_MESSAGE.format(output_path))
 
 
 def extract_pipeline_data(data: dict[str, Any]) -> dict[str, Any]:
@@ -55,7 +77,7 @@ def extract_pipeline_data(data: dict[str, Any]) -> dict[str, Any]:
     Extract relevant data from the provided pipeline configuration.
 
     Args:
-        pipeline_config (dict): The pipeline configuration to extract data from.
+        data (dict): The pipeline configuration to extract data from.
 
     Returns:
         dict: Extracted relevant data from the configuration.
@@ -71,15 +93,19 @@ def extract_pipeline_data(data: dict[str, Any]) -> dict[str, Any]:
 
     stage_artifacts = {}
     all_artifacts = set()
-    for stage_name in data["stages"]:
+
+    # Extract stages - stages is at root level in YAML
+    stages = data.get("stages", [])
+    for stage_name in stages:
         stage_info = {"name": stage_name, "artifacts": []}
         pipeline_info["stages"].append(stage_info)
 
-    for job in data.get("jobs", []):
+    # Extract jobs - jobs is at root level and is a list in YAML
+    jobs = data.get("jobs", [])
+    for job in jobs:
         job_name = job.get("name")
         stage_name = job.get("stage")
-
-        if job_name:
+        if job_name and stage_name:
             add_job_info(
                 pipeline_info, job, job_name, stage_name, stage_artifacts, all_artifacts
             )

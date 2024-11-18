@@ -74,6 +74,7 @@ class JobAttributes:
     allow_failure: Optional[str]
     style: Optional[str]
     text: str
+    stage: str = ""
 
 
 @dataclass
@@ -213,7 +214,7 @@ class JobsElement:
                 return None
 
             # 3. Create job data
-            return self._create_job_data(job_attrs, job_id)
+            return self._create_job_data(job_attrs)
         except Exception as e:
             self.logger.error(f"Failed to get job data: {str(e)}")
             return None
@@ -229,29 +230,28 @@ class JobsElement:
                 ),
                 style=ElementUtils.safe_get_attribute(job, "style"),
                 text=ElementUtils.safe_get_text(job) or "",
+                stage=ElementUtils.safe_get_attribute(job, "stage") or "",
             )
         except Exception as e:
             self.logger.error(f"Failed to extract job attributes: {str(e)}")
             return None
 
-    def _create_job_data(self, attrs: JobAttributes, job_id: str) -> Optional[JobData]:
+    def _create_job_data(self, attrs: JobAttributes) -> Optional[JobData]:
         """Create JobData from attributes"""
         try:
             # Get direct needs from data-needs attribute
             needs = attrs.needs.split(",") if attrs.needs else []
-            needs = [need.strip() for need in needs]  # Clean up any whitespace
+            needs = [need.strip() for need in needs]
 
             allow_failure = attrs.allow_failure == "true"
             order = ElementUtils.parse_job_order(attrs.style)
-            stage = ElementUtils.safe_get_attribute(attrs, "data-stage") or ""
-
             return JobData(
                 id=attrs.id.replace("job_", ""),
                 name=attrs.text,
                 needs=needs,
                 allow_failure=allow_failure,
                 order=order,
-                stage=stage,
+                stage=attrs.stage,
             )
         except Exception as e:
             self.logger.error(f"Error creating job data: {str(e)}")
