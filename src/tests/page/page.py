@@ -1,5 +1,5 @@
 import logging
-from typing import List, Optional
+from typing import Optional
 from dataclasses import dataclass
 
 from selenium.webdriver.common.by import By
@@ -17,7 +17,7 @@ from tests.page.locators import PipelinePageLocators
 
 
 @dataclass
-class PipelineData:
+class PipelineData(object):
     """Complete pipeline data structure.
 
     Attributes:
@@ -27,12 +27,12 @@ class PipelineData:
     """
 
     name: str
-    stages: List[StageData]
-    all_artifacts: List[str]
+    stages: list[StageData]
+    all_artifacts: list[str]
 
 
 @dataclass
-class VerificationResult:
+class VerificationResult(object):
     """Result of pipeline verification operations.
 
     Attributes:
@@ -50,12 +50,12 @@ class PipelineError(Exception):
     pass
 
 
-class BasePage:
+class BasePage(object):
     """Base class for all page objects.
     Provides common functionality
     for page interaction and logging."""
 
-    def __init__(self, driver: WebDriver):
+    def __init__(self, driver: WebDriver) -> None:
         self.driver = driver
         self.logger = logging.getLogger(__name__)
 
@@ -63,7 +63,7 @@ class BasePage:
 class PipelinePage(BasePage):
     """Pipeline page with business logic"""
 
-    def __init__(self, driver: WebDriver):
+    def __init__(self, driver: WebDriver) -> None:
         super().__init__(driver)
         self.pipeline_element = PipelineElement(driver)
         self.stages_element = StagesElement(driver)
@@ -84,31 +84,29 @@ class PipelinePage(BasePage):
             WebDriverException: If browser interaction fails
             Exception: For unexpected errors during data gathering
         """
+        result = None
         if not self._pipeline_data:
             try:
                 name = self.get_pipeline_name()
                 self.logger.info(f"Pipeline name: {name}")
-                if not name:
+                if name:
+                    stages = self._get_stages_data()
+                    self.logger.info(f"Got {len(stages)} stages")
+
+                    all_artifacts = self._get_all_artifacts()
+                    self.logger.info(f"Got {len(all_artifacts)} artifacts")
+
+                    self._pipeline_data = PipelineData(
+                        name=name, stages=stages, all_artifacts=all_artifacts
+                    )
+                else:
                     self.logger.error("Failed to get pipeline name")
-                    return None
-
-                stages = self._get_stages_data()
-                self.logger.info(f"Got {len(stages)} stages")
-
-                all_artifacts = self._get_all_artifacts()
-                self.logger.info(f"Got {len(all_artifacts)} artifacts")
-
-                self._pipeline_data = PipelineData(
-                    name=name, stages=stages, all_artifacts=all_artifacts
-                )
             except WebDriverException as e:
                 self.logger.error(f"Failed to get pipeline data: {str(e)}")
-                return None
             except Exception as e:
                 self.logger.error(f"Unexpected error: {str(e)}")
-                return None
 
-        return self._pipeline_data
+        return self._pipeline_data or result
 
     def get_pipeline_name(self) -> Optional[str]:
         """Get pipeline name from the page.
@@ -124,7 +122,7 @@ class PipelinePage(BasePage):
         self.logger.info(f"Successfully got pipeline name: {name}")
         return name
 
-    def get_stages(self) -> List[str]:
+    def get_stages(self) -> list[str]:
         """Retrieve list of all stage names in the pipeline.
 
         Returns:
@@ -132,7 +130,7 @@ class PipelinePage(BasePage):
         """
         return self.stages_element.get_stages()
 
-    def get_stage_artifacts(self, stage_name: str) -> List[str]:
+    def get_stage_artifacts(self, stage_name: str) -> list[str]:
         """Get artifacts for a specific stage.
 
         Args:
@@ -158,7 +156,7 @@ class PipelinePage(BasePage):
             self.logger.error(f"Failed to get stage artifacts: {str(e)}")
             return []
 
-    def get_job_dependencies(self, job_id: str) -> List[str]:
+    def get_job_dependencies(self, job_id: str) -> list[str]:
         """Get dependencies for a specific job.
 
         Args:
@@ -203,30 +201,35 @@ class PipelinePage(BasePage):
         2. Checks stage jobs and their attributes
         3. Verifies stage artifacts match with job declarations
 
-        Args:
-            stage: StageData object containing stage information
-
         Returns:
             bool: True if stage data is valid, False otherwise
         """
+        result = VerificationResult(False, "Pipeline verification not completed")
         pipeline_data = self.get_pipeline_data()
-        if not pipeline_data:
-            return VerificationResult(False, "Failed to get pipeline data")
+        if pipeline_data:
+            try:
+                if pipeline_data.stages:
+                    for stage in pipeline_data.stages:
+                        if not self._verify_stage_data(stage):
+                            result = VerificationResult(
+                                False, f"Invalid stage: {stage.name}"
+                            )
+                            break
+                    else:
+                        result = VerificationResult(
+                            True, "Pipeline verification successful"
+                        )
+                else:
+                    result = VerificationResult(False, "No stages found")
+            except Exception as e:
+                self.logger.error(f"Pipeline verification failed: {str(e)}")
+                result = VerificationResult(False, str(e))
+        else:
+            result = VerificationResult(False, "Failed to get pipeline data")
 
-        try:
-            if not pipeline_data.stages:
-                return VerificationResult(False, "No stages found")
+        return result
 
-            for stage in pipeline_data.stages:
-                if not self._verify_stage_data(stage):
-                    return VerificationResult(False, f"Invalid stage: {stage.name}")
-
-            return VerificationResult(True, "Pipeline verification successful")
-        except Exception as e:
-            self.logger.error(f"Pipeline verification failed: {str(e)}")
-            return VerificationResult(False, str(e))
-
-    def _get_stages_data(self) -> List[StageData]:
+    def _get_stages_data(self) -> list[StageData]:
         """Gather detailed data for all pipeline stages.
 
         Collects comprehensive information about each stage including
@@ -242,7 +245,7 @@ class PipelinePage(BasePage):
             stages.append(StageData(name=stage_name, jobs=jobs, artifacts=artifacts))
         return stages
 
-    def _get_stage_jobs(self, stage_name: str) -> List[JobData]:
+    def _get_stage_jobs(self, stage_name: str) -> list[JobData]:
         """Retrieve all jobs associated with a specific stage.
 
         Args:
@@ -329,7 +332,7 @@ class PipelinePage(BasePage):
                     return False
         return True
 
-    def _get_all_artifacts(self) -> List[str]:
+    def _get_all_artifacts(self) -> list[str]:
         """Collect all artifacts from all pipeline stages.
 
         Aggregates artifacts across all stages into a single list.

@@ -1,20 +1,20 @@
-from typing import List, Optional, Any
+from typing import Optional, Any
 from dataclasses import dataclass
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.common.exceptions import TimeoutException, WebDriverException
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import logging
 from tests.page.locators import PipelinePageLocators, LocatorType
 
 
-class ElementBase:
+class ElementBase(object):
     """Base class for element operations"""
 
-    def __init__(self, locator: LocatorType, timeout: int = 10):
+    def __init__(self, locator: LocatorType, timeout: int = 10) -> None:
         if not PipelinePageLocators.validate_locator(locator):
             raise ValueError(f"Invalid locator: {locator}")
         self.locator = locator
@@ -26,7 +26,7 @@ class ElementBase:
             return WebDriverWait(driver, self.timeout).until(
                 EC.presence_of_element_located(self.locator)
             )
-        except (TimeoutException, WebDriverException) as e:
+        except WebDriverException as e:
             self.logger.debug(f"Element not found: {self.locator[1]}, error: {str(e)}")
             return None
 
@@ -34,7 +34,7 @@ class ElementBase:
 class BasePageElement(ElementBase):
     """Base element class using descriptor pattern"""
 
-    def __get__(self, obj: Any, owner: Any) -> Optional[WebElement]:
+    def __get__(self, obj: Any, owner: type) -> Optional[WebElement]:
         if not obj:
             return None
         return self._wait_for_element(obj.driver)
@@ -43,7 +43,7 @@ class BasePageElement(ElementBase):
 class BaseElements(ElementBase):
     """Base class for multiple elements"""
 
-    def __get__(self, obj: Any, owner: Any) -> List[WebElement]:
+    def __get__(self, obj: Any, owner: type) -> list[WebElement]:
         if not obj:
             return []
         try:
@@ -51,22 +51,22 @@ class BaseElements(ElementBase):
                 EC.presence_of_all_elements_located(self.locator)
             )
             return elements or []
-        except (TimeoutException, WebDriverException) as e:
+        except WebDriverException as e:
             self.logger.debug(f"Elements not found: {self.locator[1]}, error: {str(e)}")
             return []
 
 
 @dataclass
-class StageData:
+class StageData(object):
     """Data class for stage information"""
 
     name: str
-    jobs: List["JobData"]
-    artifacts: List[str]
+    jobs: list["JobData"]
+    artifacts: list[str]
 
 
 @dataclass
-class JobAttributes:
+class JobAttributes(object):
     """Raw job attributes from HTML"""
 
     id: str
@@ -78,18 +78,18 @@ class JobAttributes:
 
 
 @dataclass
-class JobData:
+class JobData(object):
     """Processed job data"""
 
     id: str
     name: str
-    needs: List[str]
+    needs: list[str]
     allow_failure: bool
     order: int
     stage: str
 
 
-class ElementUtils:
+class ElementUtils(object):
     """Utility methods for element operations"""
 
     @staticmethod
@@ -98,8 +98,6 @@ class ElementUtils:
         if not element:
             return None
         try:
-            if isinstance(element, BasePageElement):
-                element = element.__get__(element, type(element))
             return element.text if element else None
         except Exception as e:
             logging.error(f"Failed to get element text: {str(e)}")
@@ -125,15 +123,15 @@ class ElementUtils:
             return 0
 
 
-class PipelineElement:
+class PipelineElement(object):
     """Pipeline element operations"""
 
-    def __init__(self, driver: WebDriver):
+    def __init__(self, driver: WebDriver) -> None:
         self.driver = driver
         self.logger = logging.getLogger(__name__)
         self._init_descriptors()
 
-    def _init_descriptors(self):
+    def _init_descriptors(self) -> None:
         self.pipeline_title = BasePageElement(PipelinePageLocators.PIPELINE_NAME)
         self.pipeline_desc = BasePageElement(PipelinePageLocators.PIPELINE_DESCRIPTION)
 
@@ -148,16 +146,16 @@ class PipelineElement:
             return None
 
 
-class StagesElement:
+class StagesElement(object):
     """Stage element operations"""
 
-    def __init__(self, driver: WebDriver):
+    def __init__(self, driver: WebDriver) -> None:
         self.driver = driver
         self.logger = logging.getLogger(__name__)
         self.stages_container = BasePageElement(PipelinePageLocators.STAGES_CONTAINER)
         self.stage_titles = BaseElements(PipelinePageLocators.STAGE_TITLE)
 
-    def get_stages(self) -> List[str]:
+    def get_stages(self) -> list[str]:
         try:
             stage_titles = self.stage_titles.__get__(self, type(self))
             return [title.text.strip() for title in stage_titles if title.text]
@@ -165,7 +163,7 @@ class StagesElement:
             self.logger.error(f"Failed to get stages: {str(e)}")
             return []
 
-    def get_stage_artifacts(self, stage_name: str) -> List[str]:
+    def get_stage_artifacts(self, stage_name: str) -> list[str]:
         try:
             xpath = (
                 f"//div[contains(@class, 'stage-artifacts')]"
@@ -181,14 +179,14 @@ class StagesElement:
             return []
 
 
-class JobsElement:
+class JobsElement(object):
     """Job element operations"""
 
-    def __init__(self, driver: WebDriver):
+    def __init__(self, driver: WebDriver) -> None:
         self.driver = driver
         self.logger = logging.getLogger(__name__)
 
-    def get_stage_jobs(self, stage_name: str) -> List[WebElement]:
+    def get_stage_jobs(self, stage_name: str) -> list[WebElement]:
         """Get all jobs in a specific stage"""
         try:
             return self.driver.find_elements(
@@ -201,23 +199,20 @@ class JobsElement:
 
     def get_job_data(self, job_id: str) -> Optional[JobData]:
         """Get job data by ID"""
+        result = None
         try:
             # 1. Get job element
             locator = PipelinePageLocators.job_by_id(job_id)
-            if not locator:
-                return None
-            job = self.driver.find_element(*locator)
-
-            # 2. Extract attributes
-            job_attrs = self._extract_job_attributes(job)
-            if not job_attrs:
-                return None
-
-            # 3. Create job data
-            return self._create_job_data(job_attrs)
+            if locator:
+                job = self.driver.find_element(*locator)
+                # 2. Extract attributes
+                job_attrs = self._extract_job_attributes(job)
+                if job_attrs:
+                    # 3. Create job data
+                    return self._create_job_data(job_attrs)
         except Exception as e:
             self.logger.error(f"Failed to get job data: {str(e)}")
-            return None
+        return result
 
     def _extract_job_attributes(self, job: WebElement) -> Optional[JobAttributes]:
         """Extract all attributes from job element"""

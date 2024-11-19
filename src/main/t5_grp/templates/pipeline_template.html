@@ -1,6 +1,16 @@
+<!-- Pipeline Visualization Template
+================================================
+This template renders a visual representation of a CI/CD pipeline with:
+- Stages and jobs layout
+- Job dependencies visualization
+- Artifact tracking
+- Interactive tooltips
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Standard meta tags and resource links -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ pipeline.name }}</title>
@@ -10,37 +20,43 @@
 <body>
 <!-- Dynamic title for the pipeline -->
 <h1 id="pipeline-title">{{ pipeline.name }}</h1>
+
+<!-- Main pipeline visualization container -->
 <div class="pipeline">
-    <!-- Container for stages -->
+    <!-- Stages container - Holds all pipeline stages and SVG arrows -->
     <div class="stages-container">
-        <!-- Loop through each stage in the pipeline -->
+        <!-- Stage iteration - Each stage contains jobs and artifacts -->
         {% for stage in pipeline.stages %}
+            <!-- Individual stage wrapper with jobs and artifacts -->
             <div class="stage-wrapper">
                 <div class="stage">
                     <div class="stage-title">{{ stage.name }}</div>
                     <!-- Loop through each job and check its stage -->
-                    {% set stage_jobs = [] %}
-                    {% for job_name, job in pipeline.jobs.items() %}
-                        {% if job.stage == stage.name %}
-                            {% set _ = stage_jobs.append((job_name, job)) %}
-                        {% endif %}
-                    {% endfor %}
-
-                    <!-- Sort jobs based on dependency count and position -->
-                    {% set sorted_jobs = stage_jobs|sort(attribute='1.dependency_count,1.position',reverse=true) %}
-                    {% for job_name, job in sorted_jobs %}
-                        <div class="job"
+                    {% for job_name, job in stage.jobs %}
+                        <div class="job job-{{ job.position }}"
                              id="job_{{ job_name }}"
                              data-job-name="{{ job_name }}"
                              data-stage="{{ job.stage }}"
                              data-needs="{{ job.needs|join(',') if job.needs else '' }}"
-                             data-allow-failure="{{ job.allow_failure|default(false)|string|lower }}"
-                             style="order: {{ loop.index }}">  <!-- Add order style -->
+                             data-allow-failure="{{ job.allow_failure|default(false)|string|lower }}">
                             {{ job_name }}
+                            <div class="job-tooltip">
+                                <div><strong>Stage:</strong> {{ job.stage }}</div>
+                                <div><strong>Dependencies:</strong> {{ job.needs|join(', ') or 'None' }}</div>
+                                <div><strong>Allow Failure:</strong> {{ job.allow_failure|default(false)|string|lower }}</div>
+                                {% if job.artifacts %}
+                                    <div><strong>Artifacts:</strong>
+                                        <ul>
+                                            {% for artifact in job.artifacts %}
+                                                <li>{{ artifact }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                {% endif %}
+                            </div>
                         </div>
                     {% endfor %}
                 </div>
-                <!-- Check if stage has artifacts -->
                 {% if stage.name in pipeline.artifacts and pipeline.artifacts[stage.name] %}
                     <div class="stage-artifacts">
                         <div class="artifacts-box">
@@ -55,7 +71,6 @@
                 {% endif %}
             </div>
         {% endfor %}
-
         <!-- All Artifacts -->
         <div class="stage-wrapper">
             <div class="stage empty-stage">
@@ -75,14 +90,19 @@
         <!-- SVG element for drawing arrows between jobs -->
         <svg class="arrows" width="100%" height="100%" preserveAspectRatio="xMinYMin meet">
             <defs>
-                <marker id="arrowhead" markerWidth="8" markerHeight="6"
-                        refX="8" refY="3" orient="auto">
-                    <polygon points="0 0, 8 3, 0 6" fill="#666"/>
+                <marker id="arrowhead-down" markerWidth="10" markerHeight="8"
+                        refX="9" refY="4" orient="auto">
+                    <polygon points="0 0, 10 4, 0 8" fill="#666"/>
+                </marker>
+                <marker id="arrowhead-up" markerWidth="10" markerHeight="8"
+                        refX="9" refY="4" orient="auto-start-reverse">
+                    <polygon points="0 0, 10 4, 0 8" fill="#666"/>
                 </marker>
             </defs>
         </svg>
     </div>
 </div>
+<!-- Pipeline visualization JavaScript -->
 <script src="{{ asset_path }}/main.js"></script>
 </body>
 </html>
