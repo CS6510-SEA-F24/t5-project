@@ -29,7 +29,6 @@ from ..config import (
     TEMPLATE_DIR_NAME,
     TEMPLATE_FILE,
     ASSETS_FOLDER,
-    SUCCESS_MESSAGE,
 )
 
 
@@ -92,7 +91,7 @@ def generate_html(data: dict[str, Any], output_path: str) -> None:
     with open(output_path, "w", encoding="utf-8") as file:
         file.write(html_output)
 
-    print(SUCCESS_MESSAGE.format(output_path))
+    print(f"Generated output.html successfully at: {output_path}")
 
 
 def sort_jobs_by_dependency(jobs: list) -> list:

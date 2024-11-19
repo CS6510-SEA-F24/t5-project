@@ -17,8 +17,6 @@ MAIN_FOLDER = "main"
 # File paths will be joined with os.path.join in the code
 ASSET_PATH_PREFIX = f"{PROJECT_ROOT}/{ASSETS_FOLDER}"
 
-# Messages
-SUCCESS_MESSAGE = "Generated output.html successfully at: {}"
 
 # Test configurations
 TEST_OUTPUT_FILENAME = "test_output.html"
