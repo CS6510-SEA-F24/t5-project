@@ -33,7 +33,8 @@ This template renders a visual representation of a CI/CD pipeline with:
                     <div class="stage-title">{{ stage.name }}</div>
                     <!-- Loop through each job and check its stage -->
                     {% for job_name, job in stage.jobs %}
-                        <div class="job job-{{ job.position }}"
+                        <div class="job"
+                             data-order="{{ loop.index0 }}"
                              id="job_{{ job_name }}"
                              data-job-name="{{ job_name }}"
                              data-stage="{{ job.stage }}"

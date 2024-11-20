@@ -95,10 +95,23 @@ def generate_html(data: dict[str, Any], output_path: str) -> None:
 
 
 def sort_jobs_by_dependency(jobs: list) -> list:
-    """Sort jobs based on dependency count and position"""
-    return sorted(
-        jobs, key=lambda x: (-x[1].get("dependency_count", 0), x[1].get("position", 0))
-    )
+    """Sort jobs based on dependency count within the same stage"""
+
+    def get_dependency_weight(job):
+        current_stage = job[1].get("stage")
+        same_stage_needs = sum(
+            1
+            for need in job[1].get("needs", [])
+            if any(
+                other_job[1].get("stage") == current_stage
+                for other_job in jobs
+                if other_job[0] == need
+            )
+        )
+        being_needed_count = job[1].get("dependency_count", 0)
+        return (same_stage_needs, being_needed_count, job[1].get("position", 0))
+
+    return sorted(jobs, key=lambda x: get_dependency_weight(x), reverse=True)
 
 
 def extract_pipeline_data(data: dict[str, Any]) -> dict[str, Any]:

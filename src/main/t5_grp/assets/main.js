@@ -87,7 +87,8 @@ document.addEventListener('DOMContentLoaded', function() {
      * @param {boolean} inSameStage - Whether the jobs are in the same stage
      * @returns {number[]} Array of [fromX, fromY, toX, toY] coordinates
      */
-    function calculateArrowPoints(fromRect, toRect, svgRect, inSameStage) {
+    function calculateArrowPoints(fromRect, toRect, svgRect, inSameStage){
+
         if (inSameStage) {
             return [
                 fromRect.left - svgRect.left + fromRect.width / 2,
@@ -239,7 +240,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const [fromX, fromY, toX, toY] = calculateArrowPoints(
             fromRect, toRect, svgRect,
-            fromStageIndex === toStageIndex
+            fromStageIndex === toStageIndex,
+            fromElement,
+            toElement
         );
 
         createArrowPath(

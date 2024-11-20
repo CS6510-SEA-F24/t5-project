@@ -102,6 +102,11 @@ h1 {
 .job-3 { order: 3; }
 .job-4 { order: 4; }
 .job-5 { order: 5; }
+.job-6 { order: 6; }
+.job-7 { order: 7; }
+.job-8 { order: 8; }
+.job-9 { order: 9; }
+.job-10 { order:10; }
 
 
 .job[data-allow-failure="true"] {
