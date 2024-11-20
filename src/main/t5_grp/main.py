@@ -1,4 +1,4 @@
-from .visualization import diagram_generator
+from t5_grp.visualization import diagram_generator
 import argparse
 from .parser import yaml_parser
 

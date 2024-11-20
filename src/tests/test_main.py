@@ -1,23 +1,13 @@
 import os
 import unittest
 from unittest.mock import patch
-from src.main.t5_grp.main import main
-
-"""
-Unit tests for the main module.
-
-This module contains tests to verify that the main function handles YAML
-parsing and HTML generation correctly.
-
-Classes:
-    TestMainFunction: Tests for the main function.
-"""
+from t5_grp.main import main
 
 
 class TestMainFunction(unittest.TestCase):
 
-    @patch("src.main.t5_grp.parser.yaml_parser.parse_yaml")
-    @patch("src.main.t5_grp.visualization.diagram_generator.generate_html")
+    @patch("t5_grp.parser.yaml_parser.parse_yaml")
+    @patch("t5_grp.visualization.diagram_generator.generate_html")
     def test_main(self, mock_generate_html, mock_parse_yaml):
         # Mock return value
         mock_parse_yaml.return_value = {"pipeline": {"name": "P1"}}

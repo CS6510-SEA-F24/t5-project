@@ -5,7 +5,7 @@ import logging
 LocatorType = Tuple[str, str]
 
 
-class PipelinePageLocators:
+class PipelinePageLocators(object):
     """Locators for pipeline visualization page elements"""
 
     # Header elements
@@ -57,13 +57,15 @@ class PipelinePageLocators:
         try:
             if not job_id.strip():
                 raise ValueError("Job ID cannot be empty")
-            return (By.ID, f"job_{job_id}")
+            return By.ID, f"job_{job_id}"
         except Exception as e:
             logging.error(f"Failed to create job locator: {str(e)}")
             return None
 
     @classmethod
-    def dependency_arrow(cls, from_id: str, to_id: str) -> Optional[LocatorType]:
+    def get_dependency_arrow_locator(
+        cls, from_id: str, to_id: str
+    ) -> Optional[LocatorType]:
         """Get dependency arrow locator between jobs"""
         try:
             return (

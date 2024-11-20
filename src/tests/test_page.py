@@ -18,15 +18,16 @@ from src.main.t5_grp.config import (
     TEST_FILES_DIR,
     TEST_YAML_FILE,
     MAIN_FOLDER,
-    TEMP_HTML_FILE
+    TEMP_HTML_FILE,
 )
+
 
 class PipelinePageTest(unittest.TestCase):
     """Test class for pipeline visualization page.
     Tests the functionality of pipeline structure, stages,
     jobs, and their relationships."""
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up test environment before each test.
         Initializes Chrome WebDriver in headless mode
         and loads the pipeline HTML page."""
@@ -36,9 +37,7 @@ class PipelinePageTest(unittest.TestCase):
 
             # Parse test YAML file
             test_yaml_path = os.path.join(
-                os.path.dirname(__file__),
-                TEST_FILES_DIR,
-                TEST_YAML_FILE
+                os.path.dirname(__file__), TEST_FILES_DIR, TEST_YAML_FILE
             )
             pipeline_data = parse_yaml(test_yaml_path)
 
@@ -50,7 +49,7 @@ class PipelinePageTest(unittest.TestCase):
                 os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
                 MAIN_FOLDER,
                 PROJECT_ROOT,
-                ASSETS_FOLDER
+                ASSETS_FOLDER,
             )
             assets_dst_dir = os.path.join(self.temp_dir, PROJECT_ROOT, ASSETS_FOLDER)
             os.makedirs(assets_dst_dir, exist_ok=True)
@@ -76,14 +75,14 @@ class PipelinePageTest(unittest.TestCase):
         except WebDriverException as e:
             self.fail(f"Failed to setup test environment: {str(e)}")
 
-    def test_pipeline_structure(self):
+    def test_pipeline_structure(self) -> None:
         """Test if pipeline structure is valid"""
         result = self.pipeline_page.verify_pipeline_structure()
         self.assertTrue(
             result.success, f"Pipeline structure verification failed: {result.message}"
         )
 
-    def test_pipeline_name(self):
+    def test_pipeline_name(self) -> None:
         """Test if pipeline name is correct"""
         name = self.pipeline_page.get_pipeline_name()
         self.assertIsNotNone(name, "Pipeline name should not be None")
@@ -91,7 +90,7 @@ class PipelinePageTest(unittest.TestCase):
             name, TEST_PIPELINE_NAME, f"Pipeline name should be '{TEST_PIPELINE_NAME}'"
         )
 
-    def test_pipeline_stages(self):
+    def test_pipeline_stages(self) -> None:
         """Test if pipeline stages are correct"""
         expected_stages = ["build", "test", "doc", "deploy"]
         stages = self.pipeline_page.get_stages()
@@ -101,7 +100,7 @@ class PipelinePageTest(unittest.TestCase):
             f"Expected stages {expected_stages}, but got {stages}",
         )
 
-    def test_stage_artifacts(self):
+    def test_stage_artifacts(self) -> None:
         """Test stage artifacts"""
         test_cases = {
             "build": ["build/classes/*", "build/reports/*"],
@@ -148,7 +147,7 @@ class PipelinePageTest(unittest.TestCase):
                     f"expected {test_cases[job]}, got {deps}",
                 )
 
-    def test_job_properties(self):
+    def test_job_properties(self) -> None:
         """Test allow_failure property"""
         self.assertTrue(
             self.pipeline_page.is_job_allow_failure("static_analysis"),
@@ -159,7 +158,7 @@ class PipelinePageTest(unittest.TestCase):
             "compile should not allow failure",
         )
 
-    def test_complete_pipeline_data(self):
+    def test_complete_pipeline_data(self) -> None:
         """Test complete pipeline data structure"""
         pipeline_data = self.pipeline_page.get_pipeline_data()
         self.assertIsNotNone(pipeline_data, "Pipeline data should not be None")
@@ -180,7 +179,7 @@ class PipelinePageTest(unittest.TestCase):
             sorted(pipeline_data.all_artifacts), sorted(expected_artifacts)
         )
 
-    def tearDown(self):
+    def tearDown(self) -> None:
         """Clean up after each test"""
         try:
             if hasattr(self, "driver"):

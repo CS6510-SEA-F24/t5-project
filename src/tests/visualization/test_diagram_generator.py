@@ -2,12 +2,13 @@ import os
 import tempfile
 import unittest
 
-from src.main.t5_grp.visualization.diagram_generator import (
-    add_job_info,
+
+from t5_grp.visualization.diagram_generator import (
     generate_html,
     extract_pipeline_data,
+    add_job_info,
 )
-from t5_grp.config import PROJECT_ROOT, ASSETS_FOLDER, ASSET_FILES, TEST_OUTPUT_FILENAME
+from t5_grp.config import ASSETS_FOLDER, ASSET_FILES, TEST_OUTPUT_FILENAME
 
 
 class TestDiagramGenerator(unittest.TestCase):
@@ -37,14 +38,23 @@ class TestDiagramGenerator(unittest.TestCase):
             # Verify output file exists
             self.assertTrue(os.path.exists(output_path))
 
-            # Verify assets were copied
-            assets_dir = os.path.join(temp_dir, PROJECT_ROOT, ASSETS_FOLDER)
+            # Verify assets directory exists
+            assets_dir = os.path.join(os.path.dirname(output_path), ASSETS_FOLDER)
             self.assertTrue(os.path.exists(assets_dir))
+
+            # Verify each asset file was copied
             for asset in ASSET_FILES:
                 self.assertTrue(
                     os.path.exists(os.path.join(assets_dir, asset)),
                     f"Asset {asset} should exist",
                 )
+
+            # Read the generated HTML file and verify basic content
+            with open(output_path, "r", encoding="utf-8") as f:
+                content = f.read()
+                self.assertIn("Test Pipeline", content)
+                self.assertIn('href="assets/main.css"', content)
+                self.assertIn('src="assets/main.js"', content)
 
     def setUp(self):
         """Initialize variables that need to be reused in multiple test cases"""
