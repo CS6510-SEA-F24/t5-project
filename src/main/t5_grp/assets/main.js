@@ -31,6 +31,40 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
+
+    function openYamlFile(yamlPath, lineNumber) {
+        const encodedPath = encodeURI(yamlPath);
+        // Support different editors
+        const editors = {
+            vscode: `vscode://file${encodedPath}:${lineNumber}`,
+            sublime: `subl://open?url=file://${encodedPath}&line=${lineNumber}`,
+            atom: `atom://core/open/file?filename=${encodedPath}&line=${lineNumber}`,
+            webstorm: `webstorm://open?file=${encodedPath}&line=${lineNumber}`
+        };
+
+        // Try to detect user's editor
+        function tryOpenEditor(url) {
+            try{
+                const opened = window.open(url, '_blank');
+                return opened !== null;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        // Try different editors in sequence
+        for (const [editor, url] of Object.entries(editors)) {
+            if (tryOpenEditor(url)) {
+                return;
+            }
+        }
+        drawArrow.setAttribute('refY', '4');
+
+        // If all attempts fail, provide file path and line number information
+        alert(`File location:\nPath: ${decodeURI(yamlPath)}\nLine: ${lineNumber}`);
+    }
+
+
     /**
      * Creates and configures SVG arrow markers for the pipeline visualization
      * Defines two types of markers:
@@ -312,6 +346,9 @@ document.addEventListener('DOMContentLoaded', function() {
     createArrowMarkers();
     updateSvgSize();
     drawAllArrows();
+
+    // Make the openYamlFile function globally accessible for YAML source links
+    window.openYamlFile = openYamlFile;
 
     // Add window resize handler
     window.addEventListener('resize', () => {

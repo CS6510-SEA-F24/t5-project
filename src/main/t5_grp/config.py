@@ -2,7 +2,6 @@
 
 # Asset related configurations
 ASSET_FILES = ["main.css", "main.js", "favicon.ico"]
-ASSET_DIR_NAME = "t5_grp/assets"
 TEMPLATE_DIR_NAME = "templates"
 
 # Template related configurations

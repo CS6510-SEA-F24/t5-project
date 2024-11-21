@@ -1,3 +1,5 @@
+import os
+
 from t5_grp.visualization import diagram_generator
 import argparse
 from .parser import yaml_parser
@@ -31,8 +33,11 @@ def main(yaml_file_path, output_path="output.html"):
         data = yaml_parser.parse_yaml(yaml_file_path)
         if data is None:
             print("Failed to parse YAML file or validation error occurred.")
+            print(f" @{os.path.basename(yaml_file_path)} ")
             return
 
+        data["__file__"] = yaml_file_path
+        print(yaml_file_path)
         # Generate the HTML visualization with output path
         diagram_generator.generate_html(data, output_path=output_path)
     except Exception as e:

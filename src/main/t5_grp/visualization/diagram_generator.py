@@ -25,7 +25,6 @@ from typing import Any
 import os
 from ..config import (
     ASSET_FILES,
-    ASSET_DIR_NAME,
     TEMPLATE_DIR_NAME,
     TEMPLATE_FILE,
     ASSETS_FOLDER,
@@ -66,12 +65,19 @@ def generate_html(data: dict[str, Any], output_path: str) -> None:
     template = env.get_template(TEMPLATE_FILE)
 
     # Rendering the template with the pipeline data
-    html_output = template.render(pipeline=pipeline_data, asset_path=ASSET_DIR_NAME)
+    html_output = template.render(
+        pipeline=pipeline_data,
+        asset_path=ASSETS_FOLDER,
+        yaml_path=os.path.abspath(data.get("__file__", "")),
+    )
 
-    # Ensure the directory for output_path exists
+    # Get absolute path
+    output_path = os.path.abspath(output_path)
     output_dir = os.path.dirname(output_path)
-    if output_dir and not os.path.exists(output_dir):
-        os.makedirs(output_dir)
+
+    # Ensure output directory exists
+    if output_dir:
+        os.makedirs(output_dir, exist_ok=True)
 
     # Create assets directory and copy resources
     assets_src_dir = os.path.join(os.path.dirname(__file__), "..", ASSETS_FOLDER)
@@ -84,8 +90,6 @@ def generate_html(data: dict[str, Any], output_path: str) -> None:
         dst = os.path.join(assets_dst_dir, asset)
         if os.path.exists(src):
             shutil.copy2(src, dst)
-
-    html_output = template.render(pipeline=pipeline_data, asset_path=ASSETS_FOLDER)
 
     # Write the HTML content to the specified output path
     with open(output_path, "w", encoding="utf-8") as file:
@@ -236,6 +240,7 @@ def add_job_info(
         "position": len(pip_info["jobs"]),
         "artifacts": job.get("artifacts", {}).get("paths", []),
         "dependency_count": priority,
+        "yaml_line": job.get("__line__", 0),
     }
     # Process each dependency of the current job
     for need in job.get("needs", []):
