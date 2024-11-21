@@ -1,35 +1,25 @@
 import os
-
 from t5_grp.visualization import diagram_generator
 import argparse
 from .parser import yaml_parser
 
-"""
-This serves as the entry point for generating CI/CD pipeline visualizations
-from a YAML file.
 
-Functions:
-    main(yaml_file_path):
-        Parses the YAML file and generates an HTML visualization if valid.
-    cli():
-        Sets up the command-line interface for the script.
-
-Usage:
-    Run the script from the command line with the path to the YAML file as
-    an argument to generate the visualization.
-"""
-
-
-def main(yaml_file_path, output_path="output.html"):
+def main(
+    yaml_file_path,
+    output_path="output.html",
+    theme="light",
+    stage_gap=60,
+):
     """
     Parses the given YAML file and generates an HTML visualization.
 
     Args:
         yaml_file_path (str): Path to the YAML file containing the CI/CD configuration.
-        output_path (str): Path where the HTML visualization will be generated.
+        output_path (str): Path where the visualization will be generated.
+        theme (str): Visual theme to apply (light/dark).
+        stage_gap (int): Gap between stages in pixels.
     """
     try:
-        # Parse the YAML file and validate its content
         data = yaml_parser.parse_yaml(yaml_file_path)
         if data is None:
             print("Failed to parse YAML file or validation error occurred.")
@@ -37,27 +27,52 @@ def main(yaml_file_path, output_path="output.html"):
             return
 
         data["__file__"] = yaml_file_path
-        print(yaml_file_path)
-        # Generate the HTML visualization with output path
-        diagram_generator.generate_html(data, output_path=output_path)
+
+        diagram_generator.generate_html(
+            data,
+            output_path=output_path,
+            theme=theme,
+            stage_gap=stage_gap,
+        )
+        print(f"Generated output.html successfully at: {os.path.abspath(output_path)}")
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
 
 def cli():
-    """Sets up the command-line interface for the script."""
-    parser = argparse.ArgumentParser(
-        description="Generate CI/CD pipeline visualization from YAML file."
-    )
-    parser.add_argument("yaml_file", help="Path to CI/CD config YAML file.")
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("yaml_file", help="Path to CI/CD config YAML file")
+
     parser.add_argument(
         "-o",
         "--output",
         default="output.html",
-        help="Path for the generated HTML visualization (default: output.html)",
+        help="Output file path (default: output.html)",
     )
+
+    parser.add_argument(
+        "-t",
+        "--theme",
+        choices=["light", "dark"],
+        default="light",
+        help="Select visualization theme (light/dark)",
+    )
+
+    parser.add_argument(
+        "--stage-gap",
+        type=int,
+        default=60,
+        help="Gap between stages in pixels (default: 60)",
+    )
+
     args = parser.parse_args()
-    main(args.yaml_file, output_path=args.output)
+    main(
+        args.yaml_file,
+        output_path=args.output,
+        theme=args.theme,
+        stage_gap=args.stage_gap,
+    )
 
 
 if __name__ == "__main__":

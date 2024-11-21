@@ -31,13 +31,20 @@ from ..config import (
 )
 
 
-def generate_html(data: dict[str, Any], output_path: str) -> None:
+def generate_html(
+    data: dict[str, Any],
+    output_path: str = "output.html",
+    theme: str = "light",
+    stage_gap: int = 60,
+) -> None:
     """
     Generate HTML visualization of pipeline configuration.
 
     Args:
         data: Pipeline configuration containing stages, jobs, and dependencies
         output_path: Target path for the generated HTML file
+        theme: Visual theme to apply
+        stage_gap: Gap between stages
 
     Raises:
         ValueError: If output_path is not provided
@@ -69,6 +76,8 @@ def generate_html(data: dict[str, Any], output_path: str) -> None:
         pipeline=pipeline_data,
         asset_path=ASSETS_FOLDER,
         yaml_path=os.path.abspath(data.get("__file__", "")),
+        theme=theme,
+        stage_gap=stage_gap,
     )
 
     # Get absolute path
@@ -94,8 +103,6 @@ def generate_html(data: dict[str, Any], output_path: str) -> None:
     # Write the HTML content to the specified output path
     with open(output_path, "w", encoding="utf-8") as file:
         file.write(html_output)
-
-    print(f"Generated output.html successfully at: {output_path}")
 
 
 def sort_jobs_by_dependency(jobs: list) -> list:

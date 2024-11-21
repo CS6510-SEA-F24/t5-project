@@ -8,7 +8,7 @@ This template renders a visual representation of a CI/CD pipeline with:
 -->
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="{{ theme }}">
 <head>
     <!-- Standard meta tags and resource links -->
     <meta charset="UTF-8">
@@ -17,6 +17,15 @@ This template renders a visual representation of a CI/CD pipeline with:
     <link rel="stylesheet" href="{{ asset_path }}/main.css">
     <link rel="icon" href="{{ asset_path }}/favicon.ico" type="image/x-icon">
     <script src="{{ asset_path }}/main.js"></script>
+    <link rel="stylesheet" href="{{ asset_path }}/main.css">
+    {% if custom_css %}
+        <link rel="stylesheet" href="{{ custom_css }}">
+    {% endif %}
+    <style>
+        :root {
+            --stage-gap: {{ stage_gap }}px;
+        }
+    </style>
 </head>
 <body>
 <!-- Dynamic title for the pipeline -->

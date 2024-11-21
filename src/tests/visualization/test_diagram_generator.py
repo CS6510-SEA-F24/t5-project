@@ -32,29 +32,42 @@ class TestDiagramGenerator(unittest.TestCase):
                 }
             }
 
-            # Call generate_html
-            generate_html(test_data, output_path)
+            # Test with default parameters
+        generate_html(test_data, output_path)
+        self._verify_html_output(output_path, "light", 60)
 
-            # Verify output file exists
-            self.assertTrue(os.path.exists(output_path))
+        # Test with dark theme
+        generate_html(test_data, output_path, theme="dark")
+        self._verify_html_output(output_path, "dark", 60)
 
-            # Verify assets directory exists
-            assets_dir = os.path.join(os.path.dirname(output_path), ASSETS_FOLDER)
-            self.assertTrue(os.path.exists(assets_dir))
+        # Test with custom stage gap
+        generate_html(test_data, output_path, stage_gap=100)
+        self._verify_html_output(output_path, "light", 100)
 
-            # Verify each asset file was copied
-            for asset in ASSET_FILES:
-                self.assertTrue(
-                    os.path.exists(os.path.join(assets_dir, asset)),
-                    f"Asset {asset} should exist",
-                )
+    def _verify_html_output(self, output_path: str, theme: str, stage_gap: int):
+        """Helper method to verify HTML output"""
+        # Verify output file exists
+        self.assertTrue(os.path.exists(output_path))
 
-            # Read the generated HTML file and verify basic content
-            with open(output_path, "r", encoding="utf-8") as f:
-                content = f.read()
-                self.assertIn("Test Pipeline", content)
-                self.assertIn('href="assets/main.css"', content)
-                self.assertIn('src="assets/main.js"', content)
+        # Verify assets directory exists
+        assets_dir = os.path.join(os.path.dirname(output_path), ASSETS_FOLDER)
+        self.assertTrue(os.path.exists(assets_dir))
+
+        # Verify each asset file was copied
+        for asset in ASSET_FILES:
+            self.assertTrue(
+                os.path.exists(os.path.join(assets_dir, asset)),
+                f"Asset {asset} should exist",
+            )
+
+            # Read the generated HTML file and verify content
+        with open(output_path, "r", encoding="utf-8") as f:
+            content = f.read()
+            self.assertIn("Test Pipeline", content)
+            self.assertIn('href="assets/main.css"', content)
+            self.assertIn('src="assets/main.js"', content)
+            self.assertIn(f'data-theme="{theme}"', content)
+            self.assertIn(f"--stage-gap: {stage_gap}px", content)
 
     def setUp(self):
         """Initialize variables that need to be reused in multiple test cases"""

@@ -39,6 +39,9 @@ The system architecture consists of the following components:
 
 ## System Architecture Diagram
 
+![System Architecture](./grp-system-architecture.png "GRP System Architecture")
+
+
 ## Technologies
 - **Python**: As the primary programming language for backend processing.
 - **Jinja2**: For rendering dynamic HTML content.
@@ -76,6 +79,39 @@ The system architecture consists of the following components:
 └── visualization
 └── test_diagram_generator.py
 ```
+
+## Component Description
+
+### Main Components
+1. **Parser Module**
+    - Handles YAML file parsing and validation
+    - Converts YAML to internal data structure
+
+2. **Visualization Module**
+    - Generates HTML/SVG visualization
+    - Manages job dependencies and artifacts
+    - Handles asset management
+
+3. **Templates**
+    - Contains Jinja2 templates for HTML generation
+    - Defines visualization layout and structure
+
+4. **Assets**
+    - CSS for styling
+    - JavaScript for interactivity
+    - Static resources
+
+### Test Structure
+- Unit tests for each module
+- Test files for validation
+- Integration tests for full pipeline
+
+## Key Files
+- `main.py`: Application entry point and CLI
+- `yaml_parser.py`: YAML configuration parser
+- `diagram_generator.py`: Visualization generator
+- `pipeline_template.html`: Main visualization template
+
 
 Reference Information
 Gitlab:https://docs.gitlab.com/ee/ci/pipelines/

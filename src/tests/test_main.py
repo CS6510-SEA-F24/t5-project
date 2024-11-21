@@ -18,12 +18,20 @@ class TestMainFunction(unittest.TestCase):
         # Create a temporary YAML file for testing
         test_yaml_path = "test.yaml"
         test_output_path = "output.html"
+        test_theme = "light"
+        test_stage_gap = 60
+
         with open(test_yaml_path, "w") as f:
             f.write("pipeline:\n  name: P1")
 
         try:
-            # Call the main function with both paths
-            main(test_yaml_path, output_path=test_output_path)
+            # Call the main function with all parameters
+            main(
+                test_yaml_path,
+                output_path=test_output_path,
+                theme=test_theme,
+                stage_gap=test_stage_gap,
+            )
 
             # Verify parse_yaml was called
             mock_parse_yaml.assert_called_once_with(test_yaml_path)
@@ -32,6 +40,8 @@ class TestMainFunction(unittest.TestCase):
             mock_generate_html.assert_called_once_with(
                 {"pipeline": {"name": "P1"}, "__file__": "test.yaml"},
                 output_path=test_output_path,
+                theme=test_theme,
+                stage_gap=test_stage_gap,
             )
 
         finally:
