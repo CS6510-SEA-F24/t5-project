@@ -16,8 +16,6 @@ This template renders a visual representation of a CI/CD pipeline with:
     <title>{{ pipeline.name }}</title>
     <link rel="stylesheet" href="{{ asset_path }}/main.css">
     <link rel="icon" href="{{ asset_path }}/favicon.ico" type="image/x-icon">
-    <script src="{{ asset_path }}/main.js"></script>
-    <link rel="stylesheet" href="{{ asset_path }}/main.css">
     {% if custom_css %}
         <link rel="stylesheet" href="{{ custom_css }}">
     {% endif %}
@@ -55,7 +53,7 @@ This template renders a visual representation of a CI/CD pipeline with:
                                 <div><strong>Stage:</strong> {{ job.stage }}</div>
                                 <div><strong>Dependencies:</strong> {{ job.needs|join(', ') or 'None' }}</div>
                                 <div><strong>Allow Failure:</strong> {{ job.allow_failure|default(false)|string|lower }}</div>
-                                <div><strong>Source:</strong> <a href="javascript:void(0)" onclick="openYamlFile('{{ yaml_path }}', {{ job.yaml_line }})">View in YAML</a></div>
+                                <div><strong>Source:</strong> <a href="javascript:void(0)" onclick="openYamlFile('{{ yaml_path }}', {{ job.__line_info.start_line }})">View in YAML</a></div>
                                 {% if job.artifacts %}
                                     <div><strong>Artifacts:</strong>
                                         <ul>
@@ -114,5 +112,6 @@ This template renders a visual representation of a CI/CD pipeline with:
         </svg>
     </div>
 </div>
+<script src="{{ asset_path }}/main.js"></script>
 </body>
 </html>

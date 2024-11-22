@@ -74,18 +74,29 @@ def parse_yaml(file_path):
             # First pass: Get the raw data with line numbers
             content = file.read()
             data = yaml.safe_load(content)
+            # Initialize job metadata dictionary
+            job_line_info = {}
+            current_job = None
+            # Track line numbers for all jobs and their components
             lines = content.split("\n")
-            job_lines = {}
             for i, line in enumerate(lines, 1):
-                if "  - name:" in line:
+                line = line.strip()
+                if "name:" in line and "jobs:" in content[: content.find(line)]:
                     job_name = line.split("name:")[1].strip()
-                    job_lines[job_name] = i
+                    job_line_info[job_name] = {"start_line": i}
+                elif line.startswith("  - name:"):
+                    if current_job and current_job in job_line_info:
+                        job_line_info[current_job]["end_line"] = i - 1
+                    current_job = line.split("name:")[1].strip()
+                    job_line_info[current_job] = {"start_line": i}
 
-            # Add line numbers to jobs
+            # Add line info to jobs
             if isinstance(data, dict) and "jobs" in data:
                 for job in data["jobs"]:
                     if isinstance(job, dict) and "name" in job:
-                        job["__line__"] = job_lines.get(job["name"], 0)
+                        job_name = job["name"]
+                        if job_name in job_line_info:
+                            job["__line_info"] = job_line_info[job_name]
 
             validate_yaml(data)
             return data

@@ -20,7 +20,14 @@ Main Components:
 4. Event Handling: Manages window resize and DOM updates
 */
 document.addEventListener('DOMContentLoaded', function() {
+    const config = {
+        theme: document.documentElement.getAttribute('data-theme') || 'light',
+        stageGap: parseInt(getComputedStyle(document.documentElement).getPropertyValue('--stage-gap')) || 60,
+        jobHeight: parseInt(getComputedStyle(document.documentElement).getPropertyValue('--job-height')) || 40,
+        jobWidth: parseInt(getComputedStyle(document.documentElement).getPropertyValue('--job-width')) || 120
+    };
     const stages = document.querySelectorAll('.stage-wrapper');
+
     document.documentElement.style.setProperty('--stage-count', String(stages.length));
 
     const svgNS = "http://www.w3.org/2000/svg";
@@ -32,38 +39,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 
-    function openYamlFile(yamlPath, lineNumber) {
-        const encodedPath = encodeURI(yamlPath);
-        // Support different editors
-        const editors = {
-            vscode: `vscode://file${encodedPath}:${lineNumber}`,
-            sublime: `subl://open?url=file://${encodedPath}&line=${lineNumber}`,
-            atom: `atom://core/open/file?filename=${encodedPath}&line=${lineNumber}`,
-            webstorm: `webstorm://open?file=${encodedPath}&line=${lineNumber}`
-        };
-
-        // Try to detect user's editor
-        function tryOpenEditor(url) {
-            try{
-                const opened = window.open(url, '_blank');
-                return opened !== null;
-            } catch (e) {
-                return false;
-            }
-        }
-
-        // Try different editors in sequence
-        for (const [editor, url] of Object.entries(editors)) {
-            if (tryOpenEditor(url)) {
-                return;
-            }
-        }
-        drawArrow.setAttribute('refY', '4');
-
-        // If all attempts fail, provide file path and line number information
-        alert(`File location:\nPath: ${decodeURI(yamlPath)}\nLine: ${lineNumber}`);
-    }
-
+    window.openYamlFile = function(yamlPath, lineNumber) {
+        window.open(`${yamlPath}#L${lineNumber}`, '_blank');
+    };
 
     /**
      * Creates and configures SVG arrow markers for the pipeline visualization
@@ -121,22 +99,25 @@ document.addEventListener('DOMContentLoaded', function() {
      * @param {boolean} inSameStage - Whether the jobs are in the same stage
      * @returns {number[]} Array of [fromX, fromY, toX, toY] coordinates
      */
-    function calculateArrowPoints(fromRect, toRect, svgRect, inSameStage){
-
+    function calculateArrowPoints(fromRect, toRect, svgRect, inSameStage) {
         if (inSameStage) {
-            return [
-                fromRect.left - svgRect.left + fromRect.width / 2,
-                fromRect.top - svgRect.top,
-                toRect.left - svgRect.left + toRect.width / 2,
-                toRect.bottom - svgRect.top
-            ];
+            const fromX = fromRect.left + fromRect.width / 2 - svgRect.left;
+            const fromY = fromRect.top - svgRect.top; // 从上边框中点开始
+            const toX = toRect.left + toRect.width / 2 - svgRect.left;
+            const toY = toRect.bottom - svgRect.top; // 到下边框中点结束
+            return [fromX, fromY, toX, toY];
+        } else {
+            // 跨阶段的连接
+            const fromCenterX = fromRect.left + fromRect.width / 2 - svgRect.left;
+            const fromCenterY = fromRect.top + fromRect.height / 2 - svgRect.top;
+            const toCenterX = toRect.left + toRect.width / 2 - svgRect.left;
+            const toCenterY = toRect.top + toRect.height / 2 - svgRect.top;
+            const fromX = fromCenterX + fromRect.width / 2;
+            const fromY = fromCenterY;
+            const toX = toCenterX - toRect.width / 2;
+            const toY = toCenterY;
+            return [fromX, fromY, toX, toY];
         }
-        return [
-            fromRect.right - svgRect.left,
-            fromRect.top + (fromRect.height / 2) - svgRect.top,
-            toRect.left - svgRect.left,
-            toRect.top + (toRect.height / 2) - svgRect.top
-        ];
     }
 
     /**
@@ -346,9 +327,6 @@ document.addEventListener('DOMContentLoaded', function() {
     createArrowMarkers();
     updateSvgSize();
     drawAllArrows();
-
-    // Make the openYamlFile function globally accessible for YAML source links
-    window.openYamlFile = openYamlFile;
 
     // Add window resize handler
     window.addEventListener('resize', () => {

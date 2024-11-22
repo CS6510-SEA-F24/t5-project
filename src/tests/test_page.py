@@ -40,6 +40,7 @@ class PipelinePageTest(unittest.TestCase):
                 os.path.dirname(__file__), TEST_FILES_DIR, TEST_YAML_FILE
             )
             pipeline_data = parse_yaml(test_yaml_path)
+            pipeline_data["__file__"] = test_yaml_path
 
             # Generate temporary HTML file
             self.temp_html = os.path.join(self.temp_dir, TEMP_HTML_FILE)
