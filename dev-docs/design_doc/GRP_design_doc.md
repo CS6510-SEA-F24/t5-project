@@ -42,18 +42,73 @@ The system architecture consists of the following components:
 ![System Architecture](./grp-system-architecture.png "GRP System Architecture")
 
 
-## Technologies
-- **Python**: As the primary programming language for backend processing.
-- **Jinja2**: For rendering dynamic HTML content.
-- **JavaScript**: To handle dynamic behaviors and interactions.
-- **SVG**: For scalable vector graphics representation.
-- **HTML/CSS**: For structuring and styling the web application.
-- **PyYAML**: For parsing YAML configuration files.
-- **Poetry**: For dependency management and project building.
-- **Nox**: For automated builds, tests, and code checks.
-- **GitHub Actions**: For CI/CD automation.
+## Core Technologies
+
+### 1. Python (^3.12)
+- **Purpose**: Main programming language for backend processing and CLI tool development
+- **Rationale**:
+   - Strong ecosystem for YAML processing and web templating
+   - Excellent cross-platform compatibility
+   - Rich library support for CI/CD tooling
+
+### 2. YAML Processing
+- **Technology**: PyYAML (^6.0.2)
+- **Purpose**: Parse and validate CI/CD pipeline configurations
+- **Rationale**:
+   - De facto standard for YAML processing in Python
+   - Robust parsing capabilities
+   - Well-maintained and documented
+
+### 3. Template Engine
+- **Technology**: Jinja2 (^3.1.4)
+- **Purpose**: Generate HTML visualizations from pipeline data
+- **Rationale**:
+   - Python's most popular templating engine
+   - Excellent integration with web frameworks
+   - Powerful macro and inheritance features
+
+## Development Tools
+
+### 1. Package Management
+- **Technology**: Poetry
+- **Purpose**: Dependency management and packaging
+- **Rationale**:
+   - Modern dependency resolution
+   - Reproducible builds
+   - Integrated virtual environment management
+
+### 2. Testing Framework
+- **Technologies**:
+   - pytest (^7.4.4)
+   - pytest-cov (^4.0.0)
+   - Selenium (^4.26.1)
+- **Purpose**: Unit testing, coverage reporting, and UI testing
+- **Rationale**:
+   - pytest: Modern features and excellent plugin ecosystem
+   - Selenium: Industry standard for web testing
+
+### 3. Code Quality Tools
+- **Technologies**:
+   - black (^24.10.0)
+   - flake8 (^6.0.0)
+   - nox (^2024.4.15)
+- **Purpose**: Code formatting, linting, and automation
+- **Rationale**:
+   - Black: Deterministic formatting
+   - flake8: Comprehensive linting
+   - nox: Flexible test automation
+
+### 4. Documentation and Syntax Highlighting
+- **Technology**: Pygments (^2.17.2)
+- **Purpose**: Syntax highlighting for YAML content
+- **Rationale**:
+   - Industry standard for syntax highlighting
+   - Extensive language support
+   - Easy integration with web output
 
 
+
+## Project Structure
 ## Code Structure
 ```
 ├── main

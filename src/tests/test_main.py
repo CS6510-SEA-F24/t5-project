@@ -123,7 +123,7 @@ class TestMainFunction(unittest.TestCase):
                 # Check for Pygments-highlighted content markers
                 self.assertIn('<div class="highlight">', content)
                 self.assertIn('<span class="nt">pipeline</span>', content)
-                self.assertIn('Test Pipeline', content)
+                self.assertIn("Test Pipeline", content)
 
 
 if __name__ == "__main__":
