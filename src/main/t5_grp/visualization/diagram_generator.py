@@ -458,8 +458,21 @@ def generate_html(
 
 def generate_yaml_html(yaml_path: str, output_dir: str) -> str:
     """Generate HTML version of YAML file with syntax highlighting."""
+    from pygments import highlight
+    from pygments.lexers import YamlLexer
+    from pygments.formatters import HtmlFormatter
+
     with open(yaml_path, "r") as f:
         yaml_content = f.read()
+
+    # Generate syntax highlighted HTML
+    highlighted_code = highlight(yaml_content, YamlLexer(), HtmlFormatter(
+        linenos=True,
+        lineanchors='line',
+        linespans='line',
+        anchorlinenos=True,
+        wrapcode=True
+    ))
 
     yaml_filename = os.path.basename(yaml_path)
     html_filename = f"{os.path.splitext(yaml_filename)[0]}_yaml.html"
@@ -468,8 +481,13 @@ def generate_yaml_html(yaml_path: str, output_dir: str) -> str:
     env = setup_jinja_environment()
     template = env.get_template("yaml_viewer_template.html")
 
+    # Add Pygments CSS
+    pygments_css = HtmlFormatter().get_style_defs('.highlight')
+
     html_output = template.render(
-        filename=yaml_filename, content=yaml_content.replace("`", "\\`")
+        filename=yaml_filename,
+        highlighted_code=highlighted_code,
+        pygments_css=pygments_css
     )
 
     with open(html_path, "w", encoding="utf-8") as f:

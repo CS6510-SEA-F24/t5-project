@@ -53,7 +53,10 @@ This template renders a visual representation of a CI/CD pipeline with:
                                 <div><strong>Stage:</strong> {{ job.stage }}</div>
                                 <div><strong>Dependencies:</strong> {{ job.needs|join(', ') or 'None' }}</div>
                                 <div><strong>Allow Failure:</strong> {{ job.allow_failure|default(false)|string|lower }}</div>
-                                <div><strong>Source:</strong> <a href="javascript:void(0)" onclick="openYamlFile('{{ yaml_path }}', {{ job.__line_info.start_line }})">View in YAML</a></div>
+                                <div><strong>Source:</strong> <a href="{{ yaml_path }}#L{{ job.__line_info.start_line }}" target="_blank" class="job-link">
+                                    View in YAML
+                                </a>
+                                </div>
                                 {% if job.artifacts %}
                                     <div><strong>Artifacts:</strong>
                                         <ul>

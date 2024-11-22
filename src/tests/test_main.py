@@ -120,9 +120,10 @@ class TestMainFunction(unittest.TestCase):
             with open(html_path, "r", encoding="utf-8") as f:
                 content = f.read()
                 self.assertIn("test.yaml", content)  # Check title
-                self.assertIn(
-                    test_yaml_content.replace("`", "\\`"), content
-                )  # Check YAML content
+                # Check for Pygments-highlighted content markers
+                self.assertIn('<div class="highlight">', content)
+                self.assertIn('<span class="nt">pipeline</span>', content)
+                self.assertIn('Test Pipeline', content)
 
 
 if __name__ == "__main__":

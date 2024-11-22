@@ -1,109 +1,62 @@
 <!DOCTYPE html>
-<html lang="en" xml:lang="en">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ filename }}</title>
+    <title>{{ filename }} - YAML View</title>
     <style>
-        body {
-            background-color: #ffffff;
-            margin: 0;
-            padding: 20px;
-        }
-        .line {
-            position: relative;
-            line-height: 1.3;
-            font-family: Consolas, Monaco, 'Courier New', monospace;
-            padding: 0 10px;
-            transition: all 0.3s ease;
-        }
-        .line:target {
-            background-color: #dcffe4;
-            border-left: 3px solid #1a7f37;
-            padding-left: 20px;
-            animation: highlight 1.5s ease;
-        }
-        @keyframes highlight {
-            50% { background-color: #b4efc3; }
-            100% { background-color: #dcffe4; }
-        }
-        .line:hover {
-            background-color: #f6f8fa;
-        }
-        .line-number {
-            position: absolute;
-            left: -3.5em;
-            color: #6e7781;
-            text-align: right;
-            width: 2.5em;
-            user-select: none;
-            font-size: 0.9em;
-        }
-        pre {
-            padding-left: 4em;
-            margin: 0;
-            background-color: #ffffff;
-            border-radius: 5px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        code {
-            font-family: Consolas, Monaco, 'Courier New', monospace;
-            font-size: 14px;
-        }
-        #yaml-content .token.key,
-        #yaml-content .token.property {
-            color: #cf222e !important;
-        }
-        #yaml-content .token.string {
-            color: #0a3069 !important;
-        }
-        #yaml-content .token.number,
-        #yaml-content .token.boolean {
-            color: #0550ae !important;
-        }
-        #yaml-content .token.punctuation {
-            color: #24292f !important;
-        }
-        #yaml-content .token.operator {
-            color: #cf222e !important;
-        }
-        #yaml-content .token.comment {
-            color: #6e7781 !important;
+        {{ pygments_css }}
+
+        /* Style for highlighted line */
+        .highlight .line-highlight {
+            background-color: #00ff00 !important;
+            display: block;
         }
     </style>
-    <link href="{{ asset_path }}/vendor/prism/prism.css" rel="stylesheet">
-    <script src="{{ asset_path }}/vendor/prism/prism.js"></script>
 </head>
 <body>
-<pre><code class="language-yaml" id="yaml-content"></code></pre>
+<div class="yaml-content">
+    {{ highlighted_code | safe }}
+</div>
+
 <script>
+    /**
+     * Handles line highlighting and scrolling in YAML viewer
+     *
+     * When the page loads, this script:
+     * 1. Checks for a line number in the URL hash (#L{number})
+     * 2. Finds the corresponding code line element
+     * 3. Scrolls to that line and highlights it
+     * 4. Removes the highlight after a delay
+     */
     document.addEventListener('DOMContentLoaded', function() {
-        const content = `{{ content | safe }}`;
-        const codeElement = document.querySelector('#yaml-content');
+        const hash = window.location.hash;
+        if (hash) {
+            // Extract line number from hash (#L{number})
+            const lineNumber = hash.replace('#L', '');
+            console.log('Looking for line:', lineNumber);
 
-        codeElement.textContent = content;
-        Prism.highlightElement(codeElement);
+            // Find the target line's code block using its ID
+            const codeBlock = document.querySelector(`.highlight span[id="line-${lineNumber}"]`);
+            console.log('Found code block:', codeBlock);
 
-        const highlightedLines = codeElement.innerHTML.split('\n');
-        codeElement.innerHTML = highlightedLines
-            .map((line, i) => `<span class="line" id="L${i+1}">
-                <span class="line-number">${i+1}</span>${line}
-            </span>`).join('\n');
+            if (codeBlock) {
+                // Smooth scroll to center the target line
+                codeBlock.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
 
-        function scrollToLine() {
-            const hash = window.location.hash;
-            if (hash) {
-                const element = document.querySelector(hash);
-                if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    element.classList.add('highlight');
-                    setTimeout(() => element.classList.remove('highlight'), 1500);
-                }
+                // Add highlight class for visual feedback
+                codeBlock.classList.add('line-highlight');
+                console.log('Added highlight class');
+
+                // Remove highlight after 6 seconds
+                setTimeout(() => {
+                    codeBlock.classList.remove('line-highlight');
+                    console.log('Removed highlight class');
+                }, 6000);
             }
         }
-
-        window.addEventListener('load', scrollToLine);
-        window.addEventListener('hashchange', scrollToLine);
     });
 </script>
 </body>
