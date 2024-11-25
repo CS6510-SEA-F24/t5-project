@@ -102,9 +102,9 @@ document.addEventListener('DOMContentLoaded', function() {
     function calculateArrowPoints(fromRect, toRect, svgRect, inSameStage) {
         if (inSameStage) {
             const fromX = fromRect.left + fromRect.width / 2 - svgRect.left;
-            const fromY = fromRect.top - svgRect.top; // 从上边框中点开始
+            const fromY = fromRect.top - svgRect.top;
             const toX = toRect.left + toRect.width / 2 - svgRect.left;
-            const toY = toRect.bottom - svgRect.top; // 到下边框中点结束
+            const toY = toRect.bottom - svgRect.top;
             return [fromX, fromY, toX, toY];
         } else {
             // 跨阶段的连接

@@ -26,13 +26,13 @@ class TestYamlParser(unittest.TestCase):
         file_path = os.path.join(self.base_dir, "../test_files/valid.yaml")
         result = parse_yaml(file_path)
 
-        # 验证 static_analysis 作业的行号
+        # validate static_analysis line
         static_analysis = next(
             job for job in result["jobs"] if job["name"] == "static_analysis"
         )
         self.assertEqual(static_analysis["__line_info"]["start_line"], 21)
 
-        # 验证 compile 作业的行号
+        # validate compile line
         compile_job = next(job for job in result["jobs"] if job["name"] == "compile")
         self.assertEqual(compile_job["__line_info"]["start_line"], 11)
 
