@@ -1,168 +1,234 @@
-# Graphical Representation of Pipelines (GRP)Design Document
+# Graphical Representation of Pipelines (GRP) Design Document
+
 ## Table of Contents
 1. [Overview](#overview)
-2. [Objectives](#objectives)
-3. [Scope](#scope)
-4. [Requirements](#requirements)
-5. [Architecture](#architecture)
-6. [Technologies](#technologies)
-7. [Pipeline Schema](#pipeline-schema)
-8. [Project Structure](#structure)
+    - Purpose
+    - Problem Statement
+    - Target Users
+2. [Requirements](#requirements)
+    - Functional Requirements
+    - Non-Functional Requirements
+3. [Objectives](#objectives)
+4. [Scope](#scope)
+5. [Pipeline Schema](#pipeline-schema)
+    - Data Model
+    - YAML Structure
+    - Validation Rules
+6. [Architecture](#architecture)
+    - System Overview
+    - Component Design
+    - Data Flow
+    - Module Interactions
+7. [Technologies](#technologies)
+    - Core Stack
+    - Development Tools
+8. [Implementation](#implementation)
+    - Project Structure
+    - Command Interface
+    - Key Components
 9. [References](#references)
+
 ## Overview
 
 ### Purpose
-The GRP tool visualizes CI/CD pipeline configurations through an intuitive graphical interface. It helps developers and DevOps teams better understand and manage their pipeline structures.
+The GRP tool visualizes CI/CD pipeline configurations through an intuitive graphical interface, transforming YAML-based pipeline definitions into interactive visual representations.
 
 ### Problem Statement
-Complex CI/CD pipelines can be difficult to understand when represented only in YAML format. This tool bridges the gap between textual configuration and visual comprehension.
+CI/CD pipelines defined in YAML format can become complex and difficult to understand, especially for:
+- Large projects with multiple stages
+- Pipelines with complex dependencies
+- Teams needing to understand pipeline flow
+- New team members learning the pipeline structure
 
-### Key Features
-1. YAML to visual pipeline conversion
-2. Interactive stage and job visualization
-3. Dependency tracking and artifact management
-4. Customizable visual themes
-
-## Objectives
-- To develop a tool that can convert YAML pipeline configuration files into a graphical format.
-- To ensure that the graphical representation accurately reflects the stages, jobs, and their dependencies.
-- To provide a user-friendly interface for visualizing complex pipeline structures.
-
-## Scope
-### Included
-- Development of a graphical representation tool that processes YAML files.
-- Visualization of stages, jobs, dependencies, and artifacts.
-- Support for dynamic updates based on changes in the YAML configuration.
-
-### Excluded
-- Integration with external CI/CD systems beyond the YAML input.
-- Advanced interactive features beyond basic visualization.
+### Target Users
+- DevOps Engineers
+- Software Developers
+- CI/CD Pipeline Maintainers
+- Project Managers
 
 ## Requirements
+
 ### Functional Requirements
-1. The tool must accept a valid YAML file as input.
-2. The graphical output must display stages and jobs according to the YAML configuration.
-3. Job dependencies must be represented as arrows connecting the relevant job graphics.
-4. Artifacts must be displayed in a separate graphical object, showing filesystem paths and regular expressions.
+1. **YAML Processing**
+    - Parse and validate YAML pipeline configurations
+    - Support standard CI/CD pipeline structures
+    - Handle job dependencies and artifacts
+
+2. **Visualization**
+    - Generate interactive HTML output
+    - Display pipeline stages and jobs
+    - Show dependencies as arrows
+    - Represent artifacts and their paths
+
+3. **Customization**
+    - Support multiple themes (light/dark)
+    - Allow stage gap adjustments
+    - Provide cleanup options
 
 ### Non-Functional Requirements
-1. The tool should be user-friendly and intuitive.
-2. The graphical representation must be responsive and visually appealing.
-3. The system should handle errors gracefully, providing meaningful feedback to users.
+1. **Performance**
+    - Quick YAML parsing
+    - Efficient HTML generation
+    - Responsive visualization
+
+2. **Usability**
+    - Clear command-line interface
+    - Intuitive visualization layout
+    - Helpful error messages
+
+3. **Maintainability**
+    - Modular code structure
+    - Comprehensive test coverage
+    - Clear documentation
+
+## Objectives
+1. Create a tool that converts YAML pipeline configurations into visual representations
+2. Provide clear visualization of pipeline structure and dependencies
+3. Support standard CI/CD pipeline features
+4. Ensure ease of use through command-line interface
+
+## Scope
+
+### Included
+- YAML pipeline configuration parsing
+- Interactive HTML visualization generation
+- Stage and job dependency visualization
+- Artifact representation
+- Theme customization
+- Command-line interface
+
+### Excluded
+- Real-time pipeline execution monitoring
+- Integration with specific CI/CD platforms
+- Pipeline editing capabilities
+- Advanced animation effects
+
+## Pipeline Schema
+
+### YAML Structure
+```yaml
+pipeline:
+  name: string (required)
+  stages:
+    - stage1
+    - stage2
+  jobs:
+    - name: string
+      stage: string
+      script:
+        - command1
+        - command2
+      dependencies:
+        - job1
+      artifacts:
+        paths:
+          - path1
+      allow_failure: boolean
+```
+
+### Validation Rules
+1. Pipeline name must be present
+2. At least one stage required
+3. Each job must reference valid stage
+4. Dependencies must reference existing jobs,dependencies is optional
+5. Artifact paths must be valid strings,artifact is optional
 
 ## Architecture
-The system architecture consists of the following components:
-- **Input Module**: Responsible for reading and validating the YAML configuration file.
-- **Processing Module**: Parses the YAML data and prepares it for visualization.
-- **Rendering Module**: Generates the graphical representation using HTML, CSS, JavaScript, and SVG.
-- **Output Module**: Exports the graphical representation in the desired format.
 
-### System Architecture Diagram
-
+### System Overview
 ![System Architecture](./grp-system-architecture.png "GRP System Architecture")
+
+### Component Design
+1. **Input Module**
+    - YAML file reading
+    - Schema validation
+    - Error handling
+
+2. **Processing Module**
+    - Pipeline data structure creation
+    - Dependency resolution
+    - Artifact tracking
+
+3. **Visualization Module**
+    - HTML template rendering
+    - CSS styling
+    - JavaScript interactivity
+
+### Data Flow
+1. Read YAML file → Validate structure → Create pipeline object
+2. Process dependencies → Generate layout → Create visualization
+3. Apply styling → Add interactivity → Output HTML
+
+### Module Interactions
+- Parser → Pipeline Object → Visualization Generator
+- Template Engine ← Assets ← Visualization Generator
+- Error Handler ← All Modules
 
 ## Technologies
 
 ### Core Stack
-| Technology | Version | Purpose | Key Benefits |
-|------------|---------|---------|--------------|
-| Python | 3.12 | Backend Processing | - Rich ecosystem<br>- Cross-platform<br>- CI/CD tooling |
-| PyYAML | 6.0.2 | YAML Processing | - Industry standard<br>- Robust parsing |
-| Jinja2 | 3.1.4 | Template Engine | - Web integration<br>- Powerful features |
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| Python | 3.12 | Core processing |
+| PyYAML | 6.0.2 | YAML parsing |
+| Jinja2 | 3.1.4 | HTML templating |
 
 ### Development Tools
 | Tool | Version | Purpose |
 |------|---------|---------|
-| Poetry | latest | Package management |
-| pytest | 7.4.4 | Testing framework |
+| Poetry | latest | Dependency management |
+| pytest | 7.4.4 | Testing |
 | black | 24.10.0 | Code formatting |
-| flake8 | 6.0.0 | Code linting |
+| flake8 | 6.0.0 | Linting |
 
-## Pipeline Schema
+## Implementation
 
-### Root Elements
-- pipeline (required)
-    - name: string (required)
-    - stages: string[] (required)
-    - jobs: Job[] (required)
-
-### Job Object
-- name: string (required)
-- stage: string (required, must match a stage name)
-- script: string[] (optional)
-- needs: string[] (optional)
-- artifacts:
-    - paths: string[] (optional)
-- allow_failure: boolean (optional)
-
-## Example
-- [test.yaml](/Users/yoyowu/NEU/t5_grp/src/tests/test_files/test.yaml)
-
-## Structure
-### Code Structure
+### Project Structure
 ```
-├── main
-│   ├── src
-│   └── t5_grp
-│       ├── assets
-│       │   ├── main.css
-│       │   └── main.js
-│       ├── main.py
-│       ├── parser
-│       │   └── yaml_parser.py
-│       ├── templates
-│       │   └── pipeline_template.html
-│       └── visualization
-│           └── diagram_generator.py
-└── tests
-├── parser
-│   └── test_yaml_parser.py
-├── test_files
-│   ├── invalid.yaml
-│   └── valid.yaml
-├── test_main.py
-└── visualization
-└── test_diagram_generator.py
+src/
+├── main/
+│   └── t5_grp/
+│       ├── assets/
+│       ├── parser/
+│       ├── templates/
+│       └── visualization/
+└── tests/
+    ├── parser/
+    ├── test_files/
+    └── visualization/
 ```
 
-### Component Description
+### Command Interface
+```bash
+Usage: cicd [-h] [-o OUTPUT] [-t {light,dark}] [--stage-gap STAGE_GAP] [--cleanup] YAML_FILE_PATH
 
-#### Main Components
+Arguments:
+  YAML_FILE_PATH                     Full path to your YAML configuration file (required, must exist)
+
+Options:
+  -h, --help                        Show this help message and exit
+  -o OUTPUT, --output OUTPUT        Output file path (default: output.html)
+  -t {light,dark}, --theme {light,dark}
+                                   Select visualization theme (default: light)
+  --stage-gap STAGE_GAP            Gap between stages in pixels (default: 60)
+  --cleanup                        Delete generated files after creation
+```
+
+### Key Components
 1. **Parser Module**
-    - Handles YAML file parsing and validation
-    - Converts YAML to internal data structure
+    - YAML file parsing
+    - Schema validation
+    - Error handling
 
 2. **Visualization Module**
-    - Generates HTML/SVG visualization
-    - Manages job dependencies and artifacts
-    - Handles asset management
+    - HTML generation
+    - CSS styling
+    - JavaScript functionality
 
-3. **Templates**
-    - Contains Jinja2 templates for HTML generation
-    - Defines visualization layout and structure
-
-4. **Assets**
-    - CSS for styling
-    - JavaScript for interactivity
-    - Static resources
-
-#### Test Structure
-- Unit tests for each module
-- Test files for validation
-- Integration tests for full pipeline
-
-
-### Command Syntax
-- `yaml_file_path`    Path to CI/CD configuration YAML file
-```bash
-poetry run cicd <yaml_file_path> [options]
-```
-#### Optional
-- `-o, --output`      Output HTML file path (default: output.html)
-- `-t, --theme`       Visual theme (light/dark) (default: light)
-- `--stage-gap`       Gap between stages in pixels (default: 60)
-- `--cleanup`         Delete generated files after creation
-- `-h, --help`        Show help message
+3. **Template System**
+    - Layout templates
+    - Theme support
+    - Component rendering
 
 ## References
 
@@ -172,4 +238,3 @@ poetry run cicd <yaml_file_path> [options]
 
 ### Related Projects
 - [GitLab Pipeline Visualizer](https://gitlab.com/gitlab-org/gitlab/-/tree/master/app/assets/javascripts/pipelines)
-
