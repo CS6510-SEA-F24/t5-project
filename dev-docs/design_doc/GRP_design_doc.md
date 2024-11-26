@@ -1,7 +1,27 @@
 # Graphical Representation of Pipelines (GRP)Design Document
-
+## Table of Contents
+1. [Overview](#overview)
+2. [Objectives](#objectives)
+3. [Scope](#scope)
+4. [Requirements](#requirements)
+5. [Architecture](#architecture)
+6. [Technologies](#technologies)
+7. [Pipeline Schema](#pipeline-schema)
+8. [Project Structure](#structure)
+9. [References](#references)
 ## Overview
-The Graphical Representation of Pipelines (GRP) project aims to create a visual representation of CI/CD pipeline configuration files. This feature is designed to enhance the understanding of pipeline structures and job dependencies, similar to the graphical representation provided by GitLab.
+
+### Purpose
+The GRP tool visualizes CI/CD pipeline configurations through an intuitive graphical interface. It helps developers and DevOps teams better understand and manage their pipeline structures.
+
+### Problem Statement
+Complex CI/CD pipelines can be difficult to understand when represented only in YAML format. This tool bridges the gap between textual configuration and visual comprehension.
+
+### Key Features
+1. YAML to visual pipeline conversion
+2. Interactive stage and job visualization
+3. Dependency tracking and artifact management
+4. Customizable visual themes
 
 ## Objectives
 - To develop a tool that can convert YAML pipeline configuration files into a graphical format.
@@ -37,21 +57,49 @@ The system architecture consists of the following components:
 - **Rendering Module**: Generates the graphical representation using HTML, CSS, JavaScript, and SVG.
 - **Output Module**: Exports the graphical representation in the desired format.
 
-## System Architecture Diagram
+### System Architecture Diagram
+
+![System Architecture](./grp-system-architecture.png "GRP System Architecture")
 
 ## Technologies
-- **Python**: As the primary programming language for backend processing.
-- **Jinja2**: For rendering dynamic HTML content.
-- **JavaScript**: To handle dynamic behaviors and interactions.
-- **SVG**: For scalable vector graphics representation.
-- **HTML/CSS**: For structuring and styling the web application.
-- **PyYAML**: For parsing YAML configuration files.
-- **Poetry**: For dependency management and project building.
-- **Nox**: For automated builds, tests, and code checks.
-- **GitHub Actions**: For CI/CD automation.
 
+### Core Stack
+| Technology | Version | Purpose | Key Benefits |
+|------------|---------|---------|--------------|
+| Python | 3.12 | Backend Processing | - Rich ecosystem<br>- Cross-platform<br>- CI/CD tooling |
+| PyYAML | 6.0.2 | YAML Processing | - Industry standard<br>- Robust parsing |
+| Jinja2 | 3.1.4 | Template Engine | - Web integration<br>- Powerful features |
 
-## Code Structure
+### Development Tools
+| Tool | Version | Purpose |
+|------|---------|---------|
+| Poetry | latest | Package management |
+| pytest | 7.4.4 | Testing framework |
+| black | 24.10.0 | Code formatting |
+| flake8 | 6.0.0 | Code linting |
+
+## Pipeline Schema
+
+### Root Elements
+- pipeline (required)
+    - name: string (required)
+    - stages: string[] (required)
+    - jobs: Job[] (required)
+
+### Job Object
+- name: string (required)
+- stage: string (required, must match a stage name)
+- script: string[] (optional)
+- needs: string[] (optional)
+- artifacts:
+    - paths: string[] (optional)
+- allow_failure: boolean (optional)
+
+## Example
+- [test.yaml](/Users/yoyowu/NEU/t5_grp/src/tests/test_files/test.yaml)
+
+## Structure
+### Code Structure
 ```
 ├── main
 │   ├── src
@@ -77,5 +125,51 @@ The system architecture consists of the following components:
 └── test_diagram_generator.py
 ```
 
-Reference Information
-Gitlab:https://docs.gitlab.com/ee/ci/pipelines/
+### Component Description
+
+#### Main Components
+1. **Parser Module**
+    - Handles YAML file parsing and validation
+    - Converts YAML to internal data structure
+
+2. **Visualization Module**
+    - Generates HTML/SVG visualization
+    - Manages job dependencies and artifacts
+    - Handles asset management
+
+3. **Templates**
+    - Contains Jinja2 templates for HTML generation
+    - Defines visualization layout and structure
+
+4. **Assets**
+    - CSS for styling
+    - JavaScript for interactivity
+    - Static resources
+
+#### Test Structure
+- Unit tests for each module
+- Test files for validation
+- Integration tests for full pipeline
+
+
+### Command Syntax
+- `yaml_file_path`    Path to CI/CD configuration YAML file
+```bash
+poetry run cicd <yaml_file_path> [options]
+```
+#### Optional
+- `-o, --output`      Output HTML file path (default: output.html)
+- `-t, --theme`       Visual theme (light/dark) (default: light)
+- `--stage-gap`       Gap between stages in pixels (default: 60)
+- `--cleanup`         Delete generated files after creation
+- `-h, --help`        Show help message
+
+## References
+
+### Documentation
+- [GitLab CI/CD Pipeline Documentation](https://docs.gitlab.com/ee/ci/pipelines/)
+- [YAML Specification](https://yaml.org/spec/1.2.2/)
+
+### Related Projects
+- [GitLab Pipeline Visualizer](https://gitlab.com/gitlab-org/gitlab/-/tree/master/app/assets/javascripts/pipelines)
+

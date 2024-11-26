@@ -4,7 +4,7 @@ This project provides a tool for generating visual representations of CI/CD pipe
 
 
 ## Table of Contents
-- [Features (WIP)]
+- [Features]
 - [Development Setup]
 - - [Prerequisites]
 - - [Build Instructions]
@@ -15,11 +15,43 @@ This project provides a tool for generating visual representations of CI/CD pipe
 - [CI/CD Workflows]
 - [License]
 
-## Features (WIP)
-- YAML Parsing: Parses CI/CD configuration defined in YAML format. 
-- HTML Generation: Generates a visually appealing HTML representation of the pipeline.
-- Dynamic Visualization: Displays stages, jobs, and their relationships, including artifacts.
-- Customizable Styles: Uses CSS for styling, allowing for easy customization of the visual output.
+## Features
+- YAML Pipeline Configuration
+    - Support for multiple stages and jobs
+    - Job dependencies management
+    - Artifact tracking
+    - Allow failure flags
+- Visual Pipeline Representation
+    - Interactive HTML output
+    - Dependency arrows visualization
+    - Stage-based layout
+    - Artifact tracking across stages
+
+## Configuration Example
+```bash
+pipeline:
+- name: Example Pipeline
+- stages:
+  - build
+  - test
+- jobs:
+  - name: compile
+  - stage: build
+  - script:
+   - echo "Building..."
+  - artifacts:
+   - paths:
+    - dist/
+```
+
+## Output Example
+```bash
+The tool generates an HTML visualization that shows:
+- Pipeline stages in sequential order
+- Jobs within each stage
+- Dependencies between jobs (shown as arrows)
+- Artifacts produced by each job
+```
 
 ## Development Setup
 

@@ -26,6 +26,7 @@ flake8 = ">=6.0.0,<8.0.0"
 nox = "^2024.4.15"
 nox-poetry = "^1.0.3"
 webdriver-manager = "^3.8.0"
+Pygments = "^2.17.2"
 
 
 [tool.poetry.scripts]
