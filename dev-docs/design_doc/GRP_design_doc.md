@@ -11,7 +11,6 @@
 3. [Objectives](#objectives)
 4. [Scope](#scope)
 5. [Pipeline Schema](#pipeline-schema)
-    - Data Model
     - YAML Structure
     - Validation Rules
 6. [Architecture](#architecture)
