@@ -1,10 +1,9 @@
-
-# Week 8
+# Week 9
 
 # Completed tasks
 
 | Task            | Weight | 
-|-----------------|--------| 
+ |-----------------|--------| 
 | Use Selenium library to test html page | 3      |
 | Update README   | 1      |
 | Clean up duplicate installations | 1      |
@@ -20,7 +19,7 @@
 # Carry over tasks
 
 | Task                                    | Weight | Assignee |
-|-----------------------------------------|--------|----------|  
+ |-----------------------------------------|--------|----------|  
 | Add a link for job                      | 1      | Yuanyuan | 
 | Generate an HTML version for the YAML file | 1      | Yuanyuan |
 | add more cli                            | 1      | Yuanyuan | 
@@ -30,7 +29,7 @@
 # New tasks
 
 | Task | Weight | Assignee |
-| ---- |--------|----------|
+ | ---- |--------|----------|
 | Package the code and release it | 2      | yuanyuan |
 
 # What worked this week?
