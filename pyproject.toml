@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "t5_grp"
-version = "0.1.0"
+version = "0.1.1"
 description = "A tool to generate and visualize pipeline diagrams"
 authors = ["Yoyo <wu.yuanyu@northeastern.edu>"]
 license = "MIT"
@@ -30,7 +30,7 @@ Pygments = "^2.17.2"
 
 
 [tool.poetry.scripts]
-cicd = "src.main.t5_grp.main:cli"
+cicd = "t5_grp.main:cli"
 
 [tool.pytest.ini_options]
 testpaths = [
