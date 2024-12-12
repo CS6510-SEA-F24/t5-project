@@ -1,0 +1,226 @@
+== Totals
+
+
+NOTE: I left the rubric the same but I evaluated this project
+differently given that this is a 1-person team and the features set
+was different than the CI/CD project.
+
+[cols="3a,1a"]
+|===
+| Area | Points
+
+|xref:reposubmission.adoc#_build_tools[Build Tools]
+|21/21
+
+|xref:reposubmission.adoc#_github_actions[GitHub Actions]
+|12/12
+
+|xref:reposubmission.adoc#_code[Code]
+|23/23
+
+|xref:reposubmission.adoc#_testing[Testing]
+|15/15
+
+|xref:reposubmission.adoc#_developer_documentation[Developer Documentation]
+|29/29
+
+| **Total**
+| **100/100**
+|===
+
+
+=== Build Tools
+
+[cols="3a,1a"]
+|===
+| Description | Points
+
+| Code is organized in packages/modules using their programming
+  language's constructs
+| 3
+
+| Repository uses a tool to build, test, generate doc etc.
+| 2
+
+| README has instruction for how to use the application as a client
+| 2
+
+
+| README has instruction for how to use the repo as a developer
+| 2
+
+| Repository builds no errors or warnings
+| 2
+
+| Repository generated docs from source (no errors or warnings)
+| 2
+
+| Test run no errors
+| 2
+
+| Test coverage reports  >= 60%
+| 3 (no points if no coverage is generated)
+
+| Static analysis of any kind
+| 3 (no points if no static analysis of any kind)
+
+| **Total**
+| **21**
+|===
+
+
+
+=== GitHub Actions
+
+[cols="3a,1a"]
+|===
+| Description |  Points
+
+| One CI/CD flow for code reviews
+|  3
+
+| One CI/CD flow for merge to `main`
+|  3
+
+| Builds, tests and generates code documentation
+|  6
+
+| **Total**
+| **12**
+|===
+
+
+=== Code
+
+[cols="3a,1a"]
+|===
+| Description | Points
+
+|
+Code organization
+
+* Can map code module/directory to design components
+| 3
+
+| Clear responsibility of each unit (module/class/function/method)
+| 5
+
+| Public API for each unit is aligned with responsibility of unit.
+
+* No extra public methods/functions/fields
+* Public elements **must be** documented
+| 5
+
+| Follows DRY
+
+* Constants are properly abstracted
+* Functions/Methods abstracted to extract common behavior and avoid
+  repetitive code
+| 5
+
+| Follows coding style through out the code
+
+* It needs to be consistent
+| 5
+
+| **Total**
+| **23**
+|===
+
+
+=== Testing
+
+
+[cols="3a,1a"]
+|===
+| Description | Points
+
+|
+Unit tests
+
+* Coverage >60%
+|
+5
+
+|
+Tests organization
+
+* separate folder
+* 1-1 code module-testing module
+* Follows DRY principle
+|
+5
+
+|
+Integration tests
+|
+5
+
+| **Total**
+| **15**
+
+|===
+
+=== Developer Documentation
+
+This section refers to documentation that covers the design of
+components. Documentation for code (API, public methods etc. is
+covered in the xref:reposubmission.adoc#_code_23_points[Code] section).
+
+[cols="3a,1a"]
+|===
+| Description | Points
+
+|
+Status of Features.
+
+Create a file called `FeatureStatus.md` at the root of your repository
+and list
+
+* all implemented features
+* partly implemented features
+
+|
+4
+
+|
+System Design
+
+* components
+* communication between components
+* topology (which components can run where)
+|
+5
+
+|
+CLI
+
+* list of options with explanation
+* should also appear on `--help` for command and sub-commands
+|
+5
+
+|
+Data Store
+
+* Schema design
+** tables
+** Keys
+** indexes
+|
+5
+
+|
+Control Component (Service, Lib, Orchestration etc.)
+
+* API documentation
+** inputs
+** outputs
+** errors/failures
+|
+10
+
+| **Total**
+| **29**
+
+|===
